@@ -25,6 +25,12 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: CI Setup
+        run: ./Scripts/ci_setup.sh 
+
+      - name: Generation
+        run: xcodegen generate
+
       - name: Build
         run: |
           xcodebuild clean build \
