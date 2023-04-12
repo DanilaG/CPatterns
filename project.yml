@@ -68,3 +68,13 @@ targets:
         LD_RUNPATH_SEARCH_PATHS:
         - "$(inherited)"
         - "@executable_path/Frameworks"
+    preBuildScripts:
+    - script: |
+        if which swiftformat >/dev/null; then
+          swiftformat --lint --swiftversion 5.5 $SRCROOT
+        else
+          echo "warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat"
+        fi
+        exit 0
+      name: Lint
+      basedOnDependencyAnalysis: NO
