@@ -1,10 +1,3 @@
-//
-//  TickerCellView.swift
-//  BeRich
-//
-//  Created by Ilya Solovyov on 13.04.2023.
-//
-
 import SwiftUI
 
 struct TickerCellView: View {

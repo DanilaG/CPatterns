@@ -1,14 +1,7 @@
-//
-//  Fakes.swift
-//  BeRich
-//
-//  Created by Ilya Solovyov on 13.04.2023.
-//
-
 import Foundation
 
 struct Fakes {
-    static let tickersFakes: [Ticker] = [
+    static let tickers: [Ticker] = [
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
                price: "100$",

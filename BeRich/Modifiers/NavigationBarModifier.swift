@@ -1,10 +1,3 @@
-//
-//  NavigationBarColor.swift
-//  BeRich
-//
-//  Created by Danila on 13.04.2023.
-//
-
 import SwiftUI
 
 private struct NavigationBarModifier: ViewModifier {
