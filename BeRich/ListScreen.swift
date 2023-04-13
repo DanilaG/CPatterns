@@ -24,8 +24,7 @@ struct ListScreen: View {
             }
             .navigationTitle("BeRich")
             .toolbarBackground(.red, for: .navigationBar)
-            .navigationBarTitleDisplayMode(.inline)
-            
+            .toolbarBackground(.visible, for: .navigationBar)
         }
     }
 }
