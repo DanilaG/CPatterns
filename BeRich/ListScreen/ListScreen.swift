@@ -26,10 +26,11 @@ struct ListScreen: View {
             }
             .listStyle(.plain)
             .background(Color.background)
-            
             .navigationTitle("BeRich")
-            .toolbarBackground(Color.blueMain, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .navigationBarColor(
+                backgroundColor: Color.blueMain,
+                titleColor: Color.white
+            )
         }
     }
 }
