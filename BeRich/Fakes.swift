@@ -12,7 +12,7 @@ struct Fakes {
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
                price: "100$",
-               priceChange: .increase(100)),
+               priceChange: .increase(100.2)),
         Ticker(title: "GOOGLE",
                subTitle: "Google inc.",
                price: "200$",
@@ -20,6 +20,6 @@ struct Fakes {
         Ticker(title: "YAHOO",
                subTitle: "Yahoo inc.",
                price: "300$",
-               priceChange: .decrease(130)),
+               priceChange: .decrease(130.89)),
     ]
 }
