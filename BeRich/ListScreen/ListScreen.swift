@@ -19,7 +19,7 @@ struct ListScreen: View {
                     .listRowInsets(EdgeInsets())
                     .listRowSeparator(.hidden)
             }
-            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
             .background(Color.background)
             .navigationTitle("BeRich")
             .navigationBarColor(

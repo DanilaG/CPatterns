@@ -57,7 +57,6 @@ struct TickerCellView: View {
                 .stroke(Color.stroke, lineWidth: 1)
         )
         .addBorder(Color.stroke, width: 0.5, cornerRadius: 16)
-        .padding(.horizontal, 16)
         .padding(.vertical, 4)
         .background(Color.background)
 
