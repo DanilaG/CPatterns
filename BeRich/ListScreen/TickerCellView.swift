@@ -15,14 +15,29 @@ struct TickerCellView: View {
     
     var body: some View {
         Group {
-            HStack {
+            HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("AAPL")
+                    Text(ticker.title)
                         .font(.title2)
-                    Text("Apple inc.")
+                    Text(ticker.subTitle)
                         .font(Font.subheadline)
+                        .foregroundColor(.gray500)
                 }
+                
                 Spacer()
+                
+                VStack(alignment: .trailing, spacing: 0) {
+                    Text(ticker.price)
+                        .font(.title)
+                        .foregroundColor(Color.yellowMain)
+                    Text(ticker.subTitle)
+                        .font(Font.subheadline)
+                        .foregroundColor(Color.white)
+                        .padding(2)
+                        .background(Color.red)
+                        .cornerRadius(4)
+                }
+                .padding(.trailing, 8)
                 
                 Button {
                     isFavourite.toggle()
@@ -51,6 +66,9 @@ struct TickerCellView: View {
 
 struct TickerCellView_Previews: PreviewProvider {
     static var previews: some View {
-        TickerCellView(ticker: Ticker(title: "Title"))
+        TickerCellView(ticker: Ticker(title: "Title",
+                                      subTitle: "Subtitle",
+                                      price: "100$",
+                                      priceChange: .increase(100)))
     }
 }

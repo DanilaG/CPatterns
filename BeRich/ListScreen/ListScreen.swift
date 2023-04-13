@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-struct Ticker: Identifiable {
-    var id: String = UUID().uuidString
-    var title: String
-}
-
 struct ListScreen: View {
     
     @State private var tickers: [Ticker] = Fakes.tickersFakes

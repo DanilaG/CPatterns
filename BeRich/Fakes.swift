@@ -9,8 +9,17 @@ import Foundation
 
 struct Fakes {
     static let tickersFakes: [Ticker] = [
-        Ticker(title: "APPLE"),
-        Ticker(title: "GOOGLE"),
-        Ticker(title: "YAHOO")
+        Ticker(title: "APPLE",
+               subTitle: "Apple inc.",
+               price: "100$",
+               priceChange: .increase(100)),
+        Ticker(title: "GOOGLE",
+               subTitle: "Google inc.",
+               price: "200$",
+               priceChange: .stable),
+        Ticker(title: "YAHOO",
+               subTitle: "Yahoo inc.",
+               price: "300$",
+               priceChange: .decrease(130)),
     ]
 }
