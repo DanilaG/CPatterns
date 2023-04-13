@@ -23,7 +23,7 @@ struct ListScreen: View {
                 Text(ticker.title)
             }
             .navigationTitle("BeRich")
-            .toolbarBackground(.red, for: .navigationBar)
+            .toolbarBackground(Color.blueMain, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
     }
