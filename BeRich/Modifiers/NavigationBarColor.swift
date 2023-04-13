@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-fileprivate struct NavigationBarModifier: ViewModifier {
-
+private struct NavigationBarModifier: ViewModifier {
     var backgroundColor: UIColor?
     var titleColor: UIColor?
 
@@ -26,11 +25,11 @@ fileprivate struct NavigationBarModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        ZStack{
+        ZStack {
             content
             VStack {
                 GeometryReader { geometry in
-                    Color(self.backgroundColor ?? .clear)
+                    Color(backgroundColor ?? .clear)
                         .frame(height: geometry.safeAreaInsets.top)
                         .edgesIgnoringSafeArea(.top)
                     Spacer()
@@ -42,7 +41,7 @@ fileprivate struct NavigationBarModifier: ViewModifier {
 
 extension View {
     func navigationBarColor(backgroundColor: Color?, titleColor: Color?) -> some View {
-        self.modifier(NavigationBarModifier(
+        modifier(NavigationBarModifier(
             backgroundColor: backgroundColor.flatMap { UIColor($0) },
             titleColor: titleColor.flatMap { UIColor($0) }
         ))

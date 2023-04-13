@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct ListScreen: View {
-    
     @State private var tickers: [Ticker] = Fakes.tickersFakes
-    
+
     var body: some View {
-        
         NavigationStack {
             List(tickers) { ticker in
                 TickerCellView(ticker: ticker)

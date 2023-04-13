@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct TickerCellView: View {
-    
     let ticker: Ticker
-    
+
     @State private var isFavourite = false
-    
+
     var body: some View {
         Group {
             HStack(spacing: 0) {
@@ -23,9 +22,9 @@ struct TickerCellView: View {
                         .font(Font.subheadline)
                         .foregroundColor(.gray500)
                 }
-                
+
                 Spacer()
-                
+
                 VStack(alignment: .trailing, spacing: 0) {
                     Text(ticker.price)
                         .font(.title)
@@ -39,11 +38,11 @@ struct TickerCellView: View {
                         .cornerRadius(4)
                 }
                 .padding(.trailing, 8)
-                
+
                 Button {
                     isFavourite.toggle()
                 } label: {
-                    Image(systemName: isFavourite ? "star.fill": "star")
+                    Image(systemName: isFavourite ? "star.fill" : "star")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .foregroundColor(.yellowMain)
@@ -60,7 +59,6 @@ struct TickerCellView: View {
         .addBorder(Color.stroke, width: 0.5, cornerRadius: 16)
         .padding(.vertical, 4)
         .background(Color.background)
-
     }
 }
 
