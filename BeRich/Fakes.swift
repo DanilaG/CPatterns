@@ -1,6 +1,6 @@
 import Foundation
 
-struct Fakes {
+enum Fakes {
     static let tickers: [Ticker] = [
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
