@@ -20,8 +20,13 @@ struct ListScreen: View {
         
         NavigationStack {
             List(tickers) { ticker in
-                Text(ticker.title)
+                TickerCellView(ticker: ticker)
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .background(Color.background)
+            
             .navigationTitle("BeRich")
             .toolbarBackground(Color.blueMain, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
