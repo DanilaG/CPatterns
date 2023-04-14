@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct SplashView: View {
-    @State var isActive: Bool = false
+    @State var isActive = false
+    let animationTime = 0.5
 
     var body: some View {
         VStack {
@@ -14,10 +15,11 @@ struct SplashView: View {
                     .padding(32)
             }
         }
+        .ignoresSafeArea(.all)
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + animationTime) {
                 withAnimation {
-                    isActive = true
+                    isActive.toggle()
                 }
             }
         }
