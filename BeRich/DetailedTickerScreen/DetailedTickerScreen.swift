@@ -41,13 +41,26 @@ struct DetailedTickerScreen: View {
     }
 }
 
+extension Ticker {
+    func stocks(timePeriod: ChartTimePeriod) -> [Stock] {
+        switch timePeriod {
+        case .tenMin:
+            return Fakes.stocksInTenMinutesPeriod
+        case .thirtyMin:
+            return Fakes.stocksInThirtyMinutesPeriod
+        default:
+            return Fakes.defaultStocks
+        }
+    }
+}
+
 struct DetailedTickerScreen_Previews: PreviewProvider {
     static var previews: some View {
         DetailedTickerScreen(
             ticker: Ticker(title: "Title",
                            subTitle: "Subtitle",
                            price: "price",
-                           priceChange: .stable)
+                           priceChange: 100.0)
         )
     }
 }
