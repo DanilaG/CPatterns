@@ -14,10 +14,6 @@ struct ListScreen: View {
             .scrollContentBackground(.hidden)
             .background(Color.background)
             .navigationTitle(navigationTitle)
-            .navigationBarColor(
-                backgroundColor: Color.blueMain,
-                titleColor: Color.white
-            )
         }
     }
 }
