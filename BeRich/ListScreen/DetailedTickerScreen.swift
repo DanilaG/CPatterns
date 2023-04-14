@@ -1,15 +1,14 @@
 import SwiftUI
 
 struct DetailedTickerScreen: View {
-    
     @State var isFavourite = false
-    
+
     init(ticker: Ticker) {
         self.ticker = ticker
     }
-    
+
     private let ticker: Ticker
-    
+
     var body: some View {
         Text(ticker.title)
             .navigationBarTitle(ticker.title)
@@ -23,7 +22,6 @@ struct DetailedTickerScreen: View {
                             .frame(width: 24, height: 24)
                             .foregroundColor(.yellowMain)
                     }
-
                 }
             }
     }
