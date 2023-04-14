@@ -22,7 +22,7 @@ struct TickerCellView: View {
                     Text(ticker.price)
                         .font(.title)
                         .foregroundColor(Color.yellowMain)
-                    Text(ticker.priceChangeText)
+                    Text(ticker.priceChange.text)
                         .frame(width: 70)
                         .font(Font.subheadline)
                         .foregroundColor(Color.white)
@@ -52,6 +52,19 @@ struct TickerCellView: View {
         .addBorder(Color.stroke, width: 0.5, cornerRadius: 16)
         .padding(.vertical, 4)
         .background(Color.background)
+    }
+}
+
+extension PriceChange {
+    var text: String {
+        switch self {
+        case let .increase(priceChange):
+            return "+\(priceChange)"
+        case .stable:
+            return "0.0"
+        case let .decrease(priceChange):
+            return "-\(priceChange)"
+        }
     }
 }
 
