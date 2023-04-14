@@ -6,7 +6,7 @@ struct BeRichApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ListScreen()
+            SplashView()
         }
     }
 }
