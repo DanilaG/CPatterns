@@ -3,7 +3,7 @@ import SwiftUI
 struct ListScreen: View {
     private let navigationTitle = "BeRich"
     @State private var tickers: [Ticker] = Fakes.tickers
-
+    @StateObject var tradingDataNetworkFetcher = TradingDataNetworkFetcher(request: NetworkService.request)
     var body: some View {
         NavigationStack {
             ScrollView {
