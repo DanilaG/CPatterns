@@ -10,7 +10,7 @@ enum PatternRecognition {
     //    }
 
     static func ext_near(x: Double, y: Double) -> Bool {
-        return abs(x - y) / max(x, y) <= 0.003
+        abs(x - y) / max(x, y) <= 0.003
     }
 
     static func lar_less(x: Double, y: Double) -> Bool {
