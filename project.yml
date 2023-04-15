@@ -27,6 +27,8 @@ settings:
     INFOPLIST_KEY_UILaunchScreen_Generation: YES
     INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
     INFOPLIST_KEY_UILaunchStoryboardName: SplashScreen.storyboard
+    INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleLightContent
+    INFOPLIST_KEY_UIViewControllerBasedStatusBarAppearance: false
   configs:
     Debug:
       ENABLE_TESTABILITY: YES
