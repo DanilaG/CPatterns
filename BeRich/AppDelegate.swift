@@ -6,6 +6,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         setUpCustomNavBarAppearance()
+        setUpCustomSearchBarAppearance()
         return true
     }
 }
@@ -26,5 +27,10 @@ extension AppDelegate {
         UINavigationBar.appearance().standardAppearance = coloredAppearance
         UINavigationBar.appearance().compactAppearance = coloredAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
+    }
+
+    private func setUpCustomSearchBarAppearance() {
+        UISearchBar.appearance().overrideUserInterfaceStyle = .dark
+        UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor(.backgroundSearch)
     }
 }

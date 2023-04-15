@@ -3,7 +3,9 @@ import SwiftUI
 struct ListScreen: View {
     private let navigationTitle = "BeRich"
     @State private var tickers: [Ticker] = Fakes.tickers
-    @StateObject var tradingDataNetworkFetcher = TradingDataNetworkFetcher(request: NetworkService.request)
+    @State private var searchText = ""
+    @StateObject private var tradingDataNetworkFetcher = TradingDataNetworkFetcher(request: NetworkService.request)
+
     var body: some View {
         NavigationStack {
             List(tickers) { ticker in
@@ -25,6 +27,10 @@ struct ListScreen: View {
             .scrollContentBackground(.hidden)
             .background(Color.background)
             .navigationTitle(navigationTitle)
+            .searchable(
+                text: $searchText
+            )
+            .foregroundColor(.white)
         }
         .accentColor(.white)
     }
