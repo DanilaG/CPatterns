@@ -112,7 +112,7 @@ def concealing_baby_swallow (t:Timeseries):
     if t.len != 12: return False
     return pt(t)==-1 and \
         t.candls[8].no_us and t.candls[8].long_black_body and t.candls[8].no_ls and \
-        t.candls[9].no_us and t.candls[9].long_black_body and t.candls[9].no_lsand and\
+        t.candls[9].no_us and t.candls[9].long_black_body and t.candls[9].no_ls and\
         t.candls[10].black_body and t.candls[10].long_us and down_body_gap (t.candls[8], t.candls[10]) and \
         down_body_gap (t.candls[9], t.candls[10]) and (t.candls[9].op > t.candls[10].hp and t.candls[10].hp > t.candls[9].cp) \
         and t.candls[11].black_body and t.candls[11].hp > t.candls[10].hp and t.candls[10].lp > t.candls[11].lp
@@ -127,12 +127,12 @@ def ladder_bottom (t:Timeseries):
         t.candls[11].black_body and (not t.candls[11].no_us) and t.candls[12].white_body and \
         up_body_gap(t.candls[11], t.candls[12])
 
-def Takuri_Line (t:Timeseries):
-# 6 candles = 5 trend + 1 significant
-    if t.len != 6: return False
+def takuri_line (t:Timeseries):
+# 9 candles = 8 trend + 1 significant
+    if t.len != 9: return False
     return pt(t)==-1 and t.candls[5].small_body and t.candls[5].no_us and ( t.candls[5].ls > 3*t.candls[5].hb)
 
-def Kicking_Bullish (t:Timeseries):
+def kicking_bullish (t:Timeseries):
 # 2 candles = 2 significant, trend is not important
     if t.len != 2: return False
     return t.candls[0].long_black_body and \
@@ -146,19 +146,22 @@ ts=Timeseries(d)
 print(ts.len)
 print(ts.candls[0].no_ls)
 
+'''
 for i in range(8,len(df)):
     d=df.iloc[(i-8):(i+1),4:8]
     ts=Timeseries(d)
     if hammer(ts):
         print (df.iloc[i,2], " - hammer")
-
-#ja =[]
-
 '''
+
+ja =[]
+
+
 for i in range(0,len(df)):
     jw={}
     d=df.iloc[i:(i+1),4:8]
     ts=Timeseries(d)
+    # вначале проверяем 1-свечные шаблоны, в которых не важен тренд
     if marubozu_black(ts):
         jw["Pattern"] = "Marubozu Black"
         jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
@@ -171,6 +174,59 @@ for i in range(0,len(df)):
         jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
         ja.append(jw)
         #print (df.iloc[i,2], " - white")
-'''
-#with open("out.json","w") as jf:
-#    json.dump(ja, jf)
+    if i>0: # в этом блоке if проверяем 2-свечные шаблоны
+        d=df.iloc[(i-1):(i+1),4:8]
+        ts=Timeseries(d)
+        if kicking_bullish(ts):
+            jw["Pattern"] = "Kicking Bullish"
+            jw["From"] = str(df.iloc[i-1,2]) + " " + str(df.iloc[i-1,3])
+            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            ja.append(jw)
+    if i>7: # в этом блоке if проверяем 9-свечные шаблоны (8 трендовых+ 1 значимая)
+        d=df.iloc[(i-8):(i+1),4:8]
+        ts=Timeseries(d)
+        if hammer(ts):
+            jw["Pattern"] = "Hammer"
+            jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            ja.append(jw)
+        if takuri_line(ts):
+            jw["Pattern"] = "Takuri Line"
+            jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            ja.append(jw)
+    if i>8: # в этом блоке if проверяем 10-свечные шаблоны (8 трендовых+ 2 значимых)
+        d=df.iloc[(i-9):(i+1),4:8]
+        ts=Timeseries(d)
+        if piercing_pattern(ts):
+            jw["Pattern"] = "Piercing Pattern"
+            jw["From"] = str(df.iloc[i-1,2]) + " " + str(df.iloc[i-1,3])
+            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            ja.append(jw)
+    if i>9: # в этом блоке if проверяем 11-свечные шаблоны (8 трендовых+ 3 значимых)
+        d=df.iloc[(i-10):(i+1),4:8]
+        ts=Timeseries(d)
+        if two_crowns(ts):
+            jw["Pattern"] = "Two Crowns"
+            jw["From"] = str(df.iloc[i-2,2]) + " " + str(df.iloc[i-2,3])
+            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            ja.append(jw)
+    if i>10: # в этом блоке if проверяем 12-свечные шаблоны (8 трендовых+ 4 значимых)
+        d=df.iloc[(i-11):(i+1),4:8]
+        ts=Timeseries(d)
+        if concealing_baby_swallow(ts):
+            jw["Pattern"] = "Concealing Baby Swallow"
+            jw["From"] = str(df.iloc[i-3,2]) + " " + str(df.iloc[i-3,3])
+            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            ja.append(jw)
+    if i>11: # в этом блоке if проверяем 13-свечные шаблоны (8 трендовых+ 5 значимых)
+        d=df.iloc[(i-12):(i+1),4:8]
+        ts=Timeseries(d)
+        if ladder_bottom(ts):
+            jw["Pattern"] = "Ladder Bottom"
+            jw["From"] = str(df.iloc[i-4,2]) + " " + str(df.iloc[i-4,3])
+            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+            ja.append(jw)
+
+with open("out1.json","w") as jf:
+    json.dump(ja, jf)
