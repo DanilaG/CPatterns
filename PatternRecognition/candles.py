@@ -125,7 +125,20 @@ def ladder_bottom (t:Timeseries):
         t.candls[9].op < t.candls[8].op and t.candls[10].op < t.candls[9].op and \
         t.candls[9].cp < t.candls[8].cp and t.candls[10].cp < t.candls[9].cp and \
         t.candls[11].black_body and (not t.candls[11].no_us) and t.candls[12].white_body and \
-        up_body_gap(t.candls[11], t.candls[12]) 
+        up_body_gap(t.candls[11], t.candls[12])
+
+def Takuri_Line (t:Timeseries):
+# 6 candles = 5 trend + 1 significant
+    if t.len != 6: return False
+    return pt(t)==-1 and t.candls[5].small_body and t.candls[5].no_us and ( t.candls[5].ls > 3*t.candls[5].hb)
+
+def Kicking_Bullish (t:Timeseries):
+# 2 candles = 2 significant, trend is not important
+    if t.len != 2: return False
+    return t.candls[0].long_black_body and \
+        t.candls[0].no_us and t.candls[0].no_ls and\
+        up_body_gap(t.candls[0], t.candls[1]) and t.candls[1].long_white_body and\
+        t.candls[1].no_us and t.candls[1].no_ls
 
 c=Candlestick(a)
 ts=Timeseries(d)
