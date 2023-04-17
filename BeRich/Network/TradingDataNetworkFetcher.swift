@@ -2,11 +2,11 @@
 import Foundation
 
 protocol TradingDataNetworkFetching {
-    func getTickers() async -> BinanceTikers?
+    func getBinanceTickers() async -> BinanceTikers?
 }
 
 final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObject {
-    func getTickers() async -> BinanceTikers? {
+    func getBinanceTickers() async -> BinanceTikers? {
         guard let url = BinanceApi.Method.exchangeInfo.url() else {
             assertionFailure()
             return nil
@@ -15,8 +15,8 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
             let data = try await request(url)
             let binanceTickers = try decodeJSON(type: BinanceTikers.self, from: data)
             return binanceTickers
-        } catch URLError.badServerResponse {
-            print(URLError.badServerResponse)
+        } catch NetworkingError.requestFailed {
+            print(NetworkingError.requestFailed)
         } catch let DecodingError.dataCorrupted(error) {
             print(error)
         } catch {
@@ -25,15 +25,25 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
         return nil
     }
 
-    func getMoexTickers() async {
-        guard let url = MoexApi.Method.allTikers.url() else { return }
+    func getMoexTickers() async -> MoexTikers? {
+        guard let url = MoexApi.Method.allTikers.url() else {
+            assertionFailure()
+            return nil
+        }
         do {
             let data = try await request(url)
             let moexTickers = try decodeJSON(type: MoexTikers.self, from: data)
-            print(moexTickers)
+            print(moexTickers.history.columns)
+            print(moexTickers.history.data[10])
+            print(moexTickers.history.data.count)
+        } catch NetworkingError.requestFailed {
+            print(NetworkingError.requestFailed)
+        } catch let DecodingError.dataCorrupted(error) {
+            print(error)
         } catch {
             print(error)
         }
+        return nil
     }
 }
 

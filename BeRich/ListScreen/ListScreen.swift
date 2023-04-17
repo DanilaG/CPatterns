@@ -31,6 +31,9 @@ struct ListScreen: View {
             .background(Color.background)
             .foregroundColor(.white)
             .navigationTitle(screenTitle)
+            .task {
+                await tradingDataNetworkFetcher.getMoexTickers()
+            }
         }
         .accentColor(.white)
         .onAppear { viewModel.send(event: .didAppear) }
