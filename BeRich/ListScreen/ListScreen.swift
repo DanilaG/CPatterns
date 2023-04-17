@@ -14,6 +14,8 @@ struct ListScreen: View {
         NavigationStack {
             Group {
                 switch viewModel.state {
+                case .initial:
+                    Color.background
                 case .loading:
                     loading()
                 case let .loaded(tickers):
@@ -29,7 +31,9 @@ struct ListScreen: View {
             )
             .foregroundColor(.white)
             .navigationTitle(screenTitle)
-        }.accentColor(.white)
+        }
+        .accentColor(.white)
+        .onAppear { viewModel.send(event: .didAppear) }
     }
 
     private func loading() -> some View {
