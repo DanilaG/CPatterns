@@ -2,7 +2,6 @@ import SwiftUI
 
 struct DetailedTickerScreen: View {
     @State var selectedTimePeriod: ChartTimePeriod = .day
-    @State private var isFavourite = false
 
     init(ticker: Ticker) {
         self.ticker = ticker
@@ -16,20 +15,7 @@ struct DetailedTickerScreen: View {
                       timePeriod: selectedTimePeriod)
 
             changeTimePeriodButtons()
-
                 .navigationBarTitle(ticker.title)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            isFavourite.toggle()
-                        } label: {
-                            Image(systemName: isFavourite ? "star.fill" : "star")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.yellowMain)
-                        }
-                    }
-                }
         }
     }
 

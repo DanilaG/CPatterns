@@ -3,8 +3,6 @@ import SwiftUI
 struct TickerCellView: View {
     let ticker: Ticker
 
-    @State private var isFavourite = false
-
     var body: some View {
         Group {
             HStack(spacing: 0) {
@@ -32,31 +30,9 @@ struct TickerCellView: View {
                         .cornerRadius(4)
                 }
                 .padding(.trailing, 8)
-
-                Button {
-                    isFavourite.toggle()
-                } label: {
-                    Image(systemName: isFavourite ? "star.fill" : "star")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.yellowMain)
-                }
             }
-            .padding(.horizontal, 16)
             .padding(.vertical, 12)
         }
-        .background(Color.white)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.stroke, lineWidth: 1)
-        )
-        .addBorder(Color.stroke, width: 0.5, cornerRadius: 16)
-        .shadow(color: .shadow,
-                radius: 8,
-                y: 4)
-        .padding(.bottom, 8)
-        .padding(.horizontal, 16)
-        .background(Color.background)
     }
 }
 
