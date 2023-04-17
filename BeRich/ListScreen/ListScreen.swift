@@ -6,20 +6,22 @@ struct ListScreen: View {
     @StateObject var tradingDataNetworkFetcher = TradingDataNetworkFetcher(request: NetworkService.request)
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(tickers) { ticker in
-                        NavigationLink {
-                            DetailedTickerScreen(ticker: ticker)
-                        } label: {
-                            TickerCellView(ticker: ticker)
-                                .listRowInsets(EdgeInsets(.zero))
-                                .listRowSeparator(.hidden)
-                        }
-                    }
-                }
-                .padding(.top, 12)
+            List(tickers) { ticker in
+                TickerCellView(ticker: ticker)
+                    .background(
+                        NavigationLink("", destination: DetailedTickerScreen(ticker: ticker)).opacity(0)
+                    )
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(
+                        Color.white
+                            .cornerRadius(cellCornerRadius)
+                            .addBorder(Color.stroke, width: 0.5, cornerRadius: cellCornerRadius)
+                            .shadow(color: .shadow, radius: 8, y: 4)
+                            .padding(.vertical, 8)
+                    )
             }
+            .padding(.horizontal, 16.0)
+            .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .background(Color.background)
             .navigationTitle(navigationTitle)
@@ -27,6 +29,8 @@ struct ListScreen: View {
         .accentColor(.white)
     }
 }
+
+private let cellCornerRadius = 16.0
 
 struct ListScreen_Previews: PreviewProvider {
     static var previews: some View {
