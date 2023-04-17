@@ -78,6 +78,7 @@ struct TickerCellView_Previews: PreviewProvider {
         TickerCellView(ticker: Ticker(title: "Title",
                                       subTitle: "Subtitle",
                                       price: "100$",
-                                      priceChange: .increase(100)))
+                                      priceChange: .increase(100))
+        )
     }
 }
