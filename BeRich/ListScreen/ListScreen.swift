@@ -1,11 +1,8 @@
 import SwiftUI
 
 struct ListScreen: View {
-    private let navigationTitle = "BeRich"
-
-    @State private var searchText = ""
-
     @StateObject private var viewModel: ListScreenViewModel
+    @State private var searchText = ""
 
     init(viewModel: ListScreenViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -24,15 +21,14 @@ struct ListScreen: View {
                     loading()
                 case let .loaded(tickers):
                     list(tickers)
+                case .error:
+                    error()
                 }
             }
             .padding(.horizontal, 16.0)
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .background(Color.background)
-            .searchable(
-                text: $searchText
-            )
             .foregroundColor(.white)
             .navigationTitle(screenTitle)
         }
@@ -62,11 +58,30 @@ struct ListScreen: View {
                         .padding(.vertical, 8)
                 )
         }
+        .searchable(
+            text: $searchText
+        )
+    }
+
+    private func error() -> some View {
+        ZStack {
+            Color.background
+            VStack(spacing: 12.0) {
+                Text(defaultErrorMessage)
+                    .foregroundColor(Color(UIColor.label))
+                Button(tryAgain) { viewModel.send(event: .didSelectReload) }
+                    .foregroundColor(Color.blueMain)
+                    .font(Font.headline)
+            }
+            .multilineTextAlignment(.center)
+        }
     }
 }
 
 private let cellCornerRadius = 16.0
 private let screenTitle = "BeRich"
+private let defaultErrorMessage = "К сожалению, что-то пошло не так"
+private let tryAgain = "Попробовать ещё раз"
 
 struct ListScreen_Previews: PreviewProvider {
     static var previews: some View {
