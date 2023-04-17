@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ListScreen: View {
     private let navigationTitle = "BeRich"
+
     @State private var searchText = ""
 
     @StateObject private var viewModel: ListScreenViewModel
@@ -9,6 +10,9 @@ struct ListScreen: View {
     init(viewModel: ListScreenViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
+
+    @State private var tickers: [Ticker] = Fakes.tickers
+    @StateObject private var tradingDataNetworkFetcher = TradingDataNetworkFetcher()
 
     var body: some View {
         NavigationStack {
