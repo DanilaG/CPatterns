@@ -2,44 +2,66 @@ import SwiftUI
 
 struct ListScreen: View {
     private let navigationTitle = "BeRich"
-    @State private var tickers: [Ticker] = Fakes.tickers
     @State private var searchText = ""
-    @StateObject private var tradingDataNetworkFetcher = TradingDataNetworkFetcher(request: NetworkService.request)
+
+    @StateObject private var viewModel: ListScreenViewModel
+
+    init(viewModel: ListScreenViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationStack {
-            List(tickers) { ticker in
-                TickerCellView(ticker: ticker)
-                    .background(
-                        NavigationLink("", destination: DetailedTickerScreen(ticker: ticker)).opacity(0)
-                    )
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(
-                        Color.white
-                            .cornerRadius(cellCornerRadius)
-                            .addBorder(Color.stroke, width: 0.5, cornerRadius: cellCornerRadius)
-                            .shadow(color: .shadow, radius: 8, y: 4)
-                            .padding(.vertical, 8)
-                    )
+            Group {
+                switch viewModel.state {
+                case .loading:
+                    loading()
+                case let .loaded(tickers):
+                    list(tickers)
+                }
             }
             .padding(.horizontal, 16.0)
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .background(Color.background)
-            .navigationTitle(navigationTitle)
             .searchable(
                 text: $searchText
             )
             .foregroundColor(.white)
+            .navigationTitle(screenTitle)
+        }.accentColor(.white)
+    }
+
+    private func loading() -> some View {
+        ZStack {
+            Color.background
+            ProgressView()
         }
-        .accentColor(.white)
+    }
+
+    private func list(_ tickers: [Ticker]) -> some View {
+        List(tickers, id: \.title) { ticker in
+            TickerCellView(ticker: ticker)
+                .background(
+                    NavigationLink("", destination: DetailedTickerScreen(ticker: ticker)).opacity(0)
+                )
+                .listRowSeparator(.hidden)
+                .listRowBackground(
+                    Color.white
+                        .cornerRadius(cellCornerRadius)
+                        .addBorder(Color.stroke, width: 0.5, cornerRadius: cellCornerRadius)
+                        .shadow(color: .shadow, radius: 8, y: 4)
+                        .padding(.vertical, 8)
+                )
+        }
     }
 }
 
 private let cellCornerRadius = 16.0
+private let screenTitle = "BeRich"
 
 struct ListScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ListScreen()
+        ListScreen(viewModel: ListScreenViewModel())
     }
 }

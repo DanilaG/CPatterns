@@ -5,15 +5,15 @@ enum Fakes {
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
                price: "100$",
-               priceChange: .increase(100.2)),
+               priceChange: 100.2),
         Ticker(title: "GOOGLE",
                subTitle: "Google inc.",
                price: "200$",
-               priceChange: .stable),
+               priceChange: 0.0),
         Ticker(title: "YAHOO",
                subTitle: "Yahoo inc.",
                price: "300$",
-               priceChange: .decrease(130.89)),
+               priceChange: -130.89),
     ]
 
     static let defaultStocks: [Stock] = [

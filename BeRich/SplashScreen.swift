@@ -7,7 +7,7 @@ struct SplashView: View {
     var body: some View {
         VStack {
             if isActive {
-                ListScreen()
+                ListScreen.make()
             } else {
                 Image("logo.splash")
                     .resizable()

@@ -1,21 +1,8 @@
-import SwiftUI
+import Foundation
 
-// TODO: to be replaced with Stock
-struct Ticker: Identifiable {
-    let id: String = UUID().uuidString
+struct Ticker {
     let title: String
     let subTitle: String
     let price: String
-    let priceChange: PriceChange
-
-    func stocks(timePeriod: ChartTimePeriod) -> [Stock] {
-        switch timePeriod {
-        case .tenMin:
-            return Fakes.stocksInTenMinutesPeriod
-        case .thirtyMin:
-            return Fakes.stocksInThirtyMinutesPeriod
-        default:
-            return Fakes.defaultStocks
-        }
-    }
+    let priceChange: Double
 }
