@@ -31,11 +31,14 @@ extension ListScreenViewModel {
         case initial
         case loading
         case loaded([Ticker])
+        case error
     }
 
     enum Event {
         case didAppear
         case didLoadTickers([Ticker])
+        case failedLoadTickers
+        case didSelectReload
     }
 }
 
@@ -55,11 +58,20 @@ extension ListScreenViewModel {
             switch event {
             case let .didLoadTickers(tickers):
                 return .loaded(tickers)
+            case .failedLoadTickers:
+                return .error
             default:
                 return state
             }
         case .loaded:
             return state
+        case .error:
+            switch event {
+            case .didSelectReload:
+                return .loading
+            default:
+                return state
+            }
         }
     }
 
@@ -67,7 +79,9 @@ extension ListScreenViewModel {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case .loading = state else { return Empty().eraseToAnyPublisher() }
 
-            return Just(Event.didLoadTickers(Fakes.tickers))
+            #warning("TODO: remove")
+            guard let result = [Event.didLoadTickers(Fakes.tickers), Event.failedLoadTickers].randomElement() else { return Empty().eraseToAnyPublisher() }
+            return Just(result)
                 .delay(for: 1, scheduler: RunLoop.main)
                 .eraseToAnyPublisher()
         }
