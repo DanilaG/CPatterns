@@ -24,6 +24,17 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
         }
         return nil
     }
+
+    func getMoexTickers() async {
+        guard let url = MoexApi.Method.allTikers.url() else { return }
+        do {
+            let data = try await request(url)
+            let moexTickers = try decodeJSON(type: MoexTikers.self, from: data)
+            print(moexTickers)
+        } catch {
+            print(error)
+        }
+    }
 }
 
 private func decodeJSON<T: Decodable>(type: T.Type, from data: Data) throws -> T {
