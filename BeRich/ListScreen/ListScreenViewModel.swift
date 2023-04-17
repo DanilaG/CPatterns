@@ -30,15 +30,16 @@ extension ListScreenViewModel {
     enum State {
         case initial
         case loading
-        case loaded([Ticker])
+        case loaded((tickers: Tickers, filter: String))
         case error
     }
 
     enum Event {
         case didAppear
-        case didLoadTickers([Ticker])
+        case didLoadTickers(Tickers)
         case failedLoadTickers
         case didSelectReload
+        case searching(String)
     }
 }
 
@@ -57,14 +58,19 @@ extension ListScreenViewModel {
         case .loading:
             switch event {
             case let .didLoadTickers(tickers):
-                return .loaded(tickers)
+                return .loaded((tickers: tickers, filter: ""))
             case .failedLoadTickers:
                 return .error
             default:
                 return state
             }
-        case .loaded:
-            return state
+        case let .loaded(data):
+            switch event {
+            case let .searching(filter):
+                return .loaded((tickers: data.tickers, filter: filter))
+            default:
+                return state
+            }
         case .error:
             switch event {
             case .didSelectReload:
@@ -89,5 +95,18 @@ extension ListScreenViewModel {
 
     static func userInput(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
         Feedback { _ in input }
+    }
+}
+
+// MARK: - Other Models
+
+typealias Tickers = [Ticker]
+
+extension Tickers {
+    func filtered(by string: String) -> Tickers {
+        guard !string.isEmpty else { return self }
+        return filter {
+            $0.title.lowercased().contains(string.lowercased())
+        }
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 enum Fakes {
-    static let tickers: [Ticker] = [
+    static let tickers: Tickers = [
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
                price: "100$",
