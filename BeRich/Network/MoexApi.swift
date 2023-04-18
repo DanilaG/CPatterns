@@ -2,12 +2,19 @@ import Foundation
 enum MoexApi {
     enum Method: String {
         case allTikers = "/iss/history/engines/stock/markets/shares/boards/tqbr/securities.json"
-
-        func url() -> URL? {
+        case candles = "/iss/engines/stock/markets/shares/boards/TQBR/securities/"
+        func url(tiket: String?, queryItems: [URLQueryItem]?) -> URL? {
             var components = URLComponents()
             components.scheme = scheme
             components.host = host
-            components.path = rawValue
+            if let tiket {
+                components.path = rawValue + tiket + candle
+            } else {
+                components.path = rawValue
+            }
+            if let queryItems {
+                components.queryItems = queryItems
+            }
             return components.url
         }
     }
@@ -15,3 +22,4 @@ enum MoexApi {
 
 private let scheme = "https"
 private let host = "iss.moex.com"
+private let candle = "/candles.json"

@@ -11,6 +11,7 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
             assertionFailure()
             return nil
         }
+        print(url)
         do {
             let data = try await request(url)
             let binanceTickers = try decodeJSON(type: BinanceTikers.self, from: data)
@@ -26,10 +27,7 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
     }
 
     func getBinanceCandles(queryItems: [URLQueryItem]?) async -> BinanceCandles? {
-        var queryItemss = [URLQueryItem]()
-        queryItemss.append(URLQueryItem(name: "symbol", value: "ETHBTC"))
-        queryItemss.append(URLQueryItem(name: "interval", value: "15m"))
-        guard let url = BinanceApi.Method.candles.url(queryItems: queryItemss) else {
+        guard let url = BinanceApi.Method.candles.url(queryItems: queryItems) else {
             assertionFailure()
             return nil
         }
@@ -49,16 +47,35 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
     }
 
     func getMoexTickers() async -> MoexTikers? {
-        guard let url = MoexApi.Method.allTikers.url() else {
+        guard let url = MoexApi.Method.allTikers.url(tiket: nil, queryItems: nil) else {
             assertionFailure()
             return nil
         }
+        print(url)
         do {
             let data = try await request(url)
             let moexTickers = try decodeJSON(type: MoexTikers.self, from: data)
-            print(moexTickers.history.columns)
-            print(moexTickers.history.data[10])
-            print(moexTickers.history.data.count)
+            return moexTickers
+        } catch NetworkingError.requestFailed {
+            print(NetworkingError.requestFailed)
+        } catch let DecodingError.dataCorrupted(error) {
+            print(error)
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+
+    func getMoexCandles(tiket: String, queryItems: [URLQueryItem]) async -> MoexCandles? {
+        guard let url = MoexApi.Method.candles.url(tiket: tiket, queryItems: queryItems) else {
+            assertionFailure()
+            return nil
+        }
+        print(url)
+        do {
+            let data = try await request(url)
+            let moexCandles = try decodeJSON(type: MoexCandles.self, from: data)
+            return moexCandles
         } catch NetworkingError.requestFailed {
             print(NetworkingError.requestFailed)
         } catch let DecodingError.dataCorrupted(error) {
