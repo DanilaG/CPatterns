@@ -1,15 +1,18 @@
 import Charts
 import SwiftUI
 
+private let unitWidth: CGFloat = 35
+
 class ChartWidth: ObservableObject {
-    @Published var chartWidth: CGFloat = .init(Fakes.defaultStocks.count) * 16
+    @Published var chartWidth: CGFloat = .init(Fakes.defaultStocks.count) * unitWidth
 }
 
 struct InternalChartView: View {
     @Environment(\.refresh) private var refresh
     var stocks: [Stock]
-    @Binding var selectedElement: Stock?
-    @State var selectedTimePeriod: ChartTimePeriod
+    @Binding private var selectedElement: Stock?
+    @State private var selectedTimePeriod: ChartTimePeriod
+    @State private var selectedChartType: ChartType = .candleChart
 
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
@@ -42,7 +45,7 @@ struct InternalChartView: View {
                             ZStack {
                                 ChartUnderlayForScroll(stocksCount: stocks.count,
                                                        chartWidth: chartWidth)
-                                CandlesView(stocks: stocks)
+                                CandlesView(stocks: stocks, selectedTimePeriod: $selectedTimePeriod, selectedChartType: $selectedChartType)
                                     .chartOverlay { proxy in
                                         GeometryReader { nthGeometryItem in
                                             Rectangle().fill(.clear).contentShape(Rectangle())
@@ -139,6 +142,39 @@ struct InternalChartView: View {
                 // задаем фиксированную ширину контейнера с осью Y
                 .frame(width: 25)
                 .background(.white)
+
+                VStack {
+                    HStack {
+                        Button(action: {
+                            selectedChartType.toggle()
+                        }, label: { Image(systemName: selectedChartType.sfTitle)
+                            .foregroundColor(Color.white)
+                            .frame(width: 15, height: 20)
+
+                        })
+                        .buttonStyle(.bordered)
+                        .background((Color.blueMain).cornerRadius(10))
+                        .padding()
+                        Spacer()
+                    }
+                    Spacer()
+
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            scrollTo.toggle()
+                            candleScrollTo = stocks.count - 1
+                        }, label: {
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(Color.white)
+                                .frame(width: 15, height: 20)
+                        })
+                        .buttonStyle(.bordered)
+                        .background((Color.blueMain).cornerRadius(10))
+                        .padding(.trailing, 35)
+                        .padding(.bottom, 25)
+                    }
+                }
             }
             .frame(height: 400)
             Button {
@@ -157,7 +193,7 @@ struct InternalChartView: View {
         if let date = proxy.value(atX: relativeXPosition) as Date? {
             // Find the closest date element.
             var minDistance: TimeInterval = .infinity
-            var foundIndex: Int? = nil
+            var foundIndex: Int?
             for index in data.indices {
                 let nthDistance = data[index].date.distance(to: date)
                 if abs(nthDistance) < minDistance {

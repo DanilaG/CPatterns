@@ -14,7 +14,7 @@ struct ChartView: View {
                 ZStack(alignment: .topLeading) {
                     GeometryReader { nthGeoItem in
                         if let selectedElement {
-                            let dateInterval = Calendar.current.dateInterval(of: .day, for: selectedElement.date)!
+                            let dateInterval = Calendar.current.dateInterval(of: .minute, for: selectedElement.date)!
                             let startPositionX1 = proxy.position(forX: dateInterval.start) ?? 0
                             let startPositionX2 = proxy.position(forX: dateInterval.end) ?? 0
                             let midStartPositionX = (startPositionX1 + startPositionX2) / 2 + nthGeoItem[proxy.plotAreaFrame].origin.x

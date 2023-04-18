@@ -37,18 +37,27 @@ extension ChartTimePeriod {
 
     var unit: Calendar.Component {
         switch self {
-        case .tenMin:
-            return .minute
-        case .thirtyMin:
-            return .minute
-        case .hour:
+        case .tenMin, .thirtyMin:
             return .hour
-        case .day:
+        case .hour:
             return .day
-        case .month:
+        case .day:
             return .month
-        case .year:
+        case .month, .year:
             return .year
+        }
+    }
+
+    var format: Date.FormatStyle {
+        switch self {
+        case .tenMin, .thirtyMin:
+            return .dateTime.hour()
+        case .hour:
+            return .dateTime.day()
+        case .day:
+            return .dateTime.month()
+        case .month, .year:
+            return .dateTime.year()
         }
     }
 }
