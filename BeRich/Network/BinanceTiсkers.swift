@@ -1,7 +1,7 @@
 
 import Foundation
 
-struct BinanceTikers: Decodable {
+struct BinanceTiсkers: Decodable {
     struct Symbol: Decodable {
         var symbol: String
         var tradingSessionStatus: Status

@@ -1,14 +1,14 @@
 import Foundation
 enum MoexApi {
     enum Method: String {
-        case allTikers = "/iss/history/engines/stock/markets/shares/boards/tqbr/securities.json"
+        case allTiсkers = "/iss/history/engines/stock/markets/shares/boards/tqbr/securities.json"
         case candles = "/iss/engines/stock/markets/shares/boards/TQBR/securities/"
-        func url(tiket: String?, queryItems: [URLQueryItem]?) -> URL? {
+        func url(tiсker: String?, queryItems: [URLQueryItem]? = nil) -> URL? {
             var components = URLComponents()
             components.scheme = scheme
             components.host = host
-            if let tiket {
-                components.path = rawValue + tiket + candle
+            if let tiсker {
+                components.path = rawValue + tiсker + candle
             } else {
                 components.path = rawValue
             }

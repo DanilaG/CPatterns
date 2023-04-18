@@ -1,14 +1,16 @@
+
 import Foundation
 
-struct MoexCandles: Decodable {
-    let candles: Candles
+struct MoexTiсkers: Decodable {
+    let history: History
+    struct History: Decodable {
+        let columns: [String]
+        let data: [[MoexTiсker]]
 
-    struct Candles: Decodable {
-        let data: [[Candle]]
-
-        enum Candle: Decodable {
+        enum MoexTiсker: Decodable {
             case double(Double)
             case string(String)
+            case null
 
             init(from decoder: Decoder) throws {
                 let container = try decoder.singleValueContainer()
@@ -20,9 +22,13 @@ struct MoexCandles: Decodable {
                     self = .string(x)
                     return
                 }
+                if container.decodeNil() {
+                    self = .null
+                    return
+                }
                 let debugDescription = "Wrong type for MoexTiсker"
                 let error = DecodingError.Context(codingPath: decoder.codingPath, debugDescription: debugDescription)
-                throw DecodingError.typeMismatch(Candle.self, error)
+                throw DecodingError.typeMismatch(MoexTiсker.self, error)
             }
         }
     }
