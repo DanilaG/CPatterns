@@ -3,6 +3,7 @@ import XCTest
 @testable import BeRich
 
 final class PatternRecognitionTests: XCTestCase {
+    let patternDetector = PatternDetector()
     // https://oleb.net/blog/2017/03/keeping-xctest-in-sync/
     static var allTests = [
         ("testDetectMarubozuBlackPattern", testDetectMarubozuBlackPattern),
@@ -17,59 +18,59 @@ final class PatternRecognitionTests: XCTestCase {
 
     func testDetectMarubozuBlackPattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.marubozuBlack)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.marubozuBlack)
 
         XCTAssertEqual(detectedPatterns.count, 9)
     }
 
     func testDetectMarubozuWhitePattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.marubozuWhite)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.marubozuWhite)
 
         XCTAssertEqual(detectedPatterns.count, 3)
     }
 
     func testHammerPattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.hammer)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.hammer)
         XCTAssertEqual(detectedPatterns.count, 18)
     }
 
     func testPiercingPattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.piercingPattern)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.piercingPattern)
         XCTAssertEqual(detectedPatterns.count, 3)
     }
 
     func testTwoCrownsPattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.twoCrowns)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.twoCrowns)
         XCTAssertEqual(detectedPatterns.count, 0)
     }
 
     func testConcealingBabySwallowPattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.concealingBabySwallow)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.concealingBabySwallow)
         XCTAssertEqual(detectedPatterns.count, 0)
     }
 
     func testLadderBottomPattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.ladderBottom)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.ladderBottom)
         XCTAssertEqual(detectedPatterns.count, 0)
     }
 
     func testKickingBullishPattern() throws {
         let candlesticks = getCSVData()
-        let detectedPatterns = detectPattern(candelsticks: candlesticks,
-                                             pattern: CandlePattern.kickingBullish)
+        let detectedPatterns = patternDetector.detectPattern(candelsticks: candlesticks,
+                                                             pattern: CandlePattern.kickingBullish)
         XCTAssertEqual(detectedPatterns.count, 0)
     }
 
@@ -91,19 +92,20 @@ final class PatternRecognitionTests: XCTestCase {
                 let highPrice = Double($0[5])!
                 let lowPrice = Double($0[6])!
                 let closePrice = Double($0[7])!
+                let date = DateFormatting.csvDateFormatter.date(from: $0[2])!
                 return Candlestick(openPrice: openPrice,
                                    highPrice: highPrice,
                                    lowPrice: lowPrice,
-                                   closePrice: closePrice)
+                                   closePrice: closePrice,
+                                   date: date)
             }
         return candles
     }
 
     private func path(forResource resource: String, ofType resourceType: String) -> String? {
-        for bundle in [Bundle(for: type(of: self)), Bundle.module] {
-            if let path = bundle.path(forResource: resource, ofType: resourceType) {
-                return path
-            }
+        let bundle = Bundle(for: type(of: self))
+        if let path = bundle.path(forResource: resource, ofType: resourceType) {
+            return path
         }
         return nil
     }

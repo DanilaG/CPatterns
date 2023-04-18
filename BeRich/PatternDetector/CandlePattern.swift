@@ -1,6 +1,6 @@
 import Foundation
 
-enum CandlePattern {
+enum CandlePattern: CaseIterable {
     case marubozuBlack
     case marubozuWhite
     case hammer
@@ -13,6 +13,29 @@ enum CandlePattern {
 }
 
 extension CandlePattern {
+    var title: String {
+        switch self {
+        case .marubozuBlack:
+            return "Марибозу черный"
+        case .marubozuWhite:
+            return "Марибозу белый"
+        case .hammer:
+            return "Молоток"
+        case .piercingPattern:
+            return "Пирсинг"
+        case .twoCrowns:
+            return "Две короны"
+        case .concealingBabySwallow:
+            return "Прячущаяся ласточка"
+        case .ladderBottom:
+            return "Дно лестницы"
+        case .takuriLine:
+            return "Линия Такури"
+        case .kickingBullish:
+            return "Брыкающийся бычий настрой"
+        }
+    }
+
     var patternLenght: Int {
         switch self {
         case .marubozuBlack:
