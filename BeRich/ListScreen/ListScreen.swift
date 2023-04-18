@@ -8,7 +8,7 @@ struct ListScreen: View {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    @State private var tickers: [Ticker] = Fakes.tickers
+    @State private var tickers: Tickers = Fakes.tickers
     @StateObject private var tradingDataNetworkFetcher = TradingDataNetworkFetcher()
 
     var body: some View {
@@ -19,8 +19,8 @@ struct ListScreen: View {
                     Color.background
                 case .loading:
                     loading()
-                case let .loaded(tickers):
-                    list(tickers)
+                case let .loaded(data):
+                    list(data.tickers.filtered(by: data.filter))
                 case .error:
                     error()
                 }
@@ -43,24 +43,37 @@ struct ListScreen: View {
         }
     }
 
-    private func list(_ tickers: [Ticker]) -> some View {
-        List(tickers, id: \.title) { ticker in
-            TickerCellView(ticker: ticker)
-                .background(
-                    NavigationLink("", destination: DetailedTickerScreen(ticker: ticker)).opacity(0)
-                )
-                .listRowSeparator(.hidden)
-                .listRowBackground(
-                    Color.white
-                        .cornerRadius(cellCornerRadius)
-                        .addBorder(Color.stroke, width: 0.5, cornerRadius: cellCornerRadius)
-                        .shadow(color: .shadow, radius: 8, y: 4)
-                        .padding(.vertical, 8)
-                )
+    private func list(_ tickers: Tickers) -> some View {
+        Group {
+            if !tickers.isEmpty {
+                List(tickers, id: \.title) { ticker in
+                    TickerCellView(ticker: ticker)
+                        .background(
+                            NavigationLink("", destination: DetailedTickerScreen(ticker: ticker)).opacity(0)
+                        )
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(
+                            Color.white
+                                .cornerRadius(cellCornerRadius)
+                                .addBorder(Color.stroke, width: 0.5, cornerRadius: cellCornerRadius)
+                                .shadow(color: .shadow, radius: 8, y: 4)
+                                .padding(.vertical, 8)
+                        )
+                }
+            } else {
+                ZStack {
+                    Color.background
+                    Text(notFound)
+                        .foregroundColor(Color(UIColor.label))
+                }
+            }
         }
         .searchable(
             text: $searchText
         )
+        .onChange(of: searchText) { text in
+            viewModel.send(event: .searching(text))
+        }
     }
 
     private func error() -> some View {
@@ -82,6 +95,7 @@ private let cellCornerRadius = 16.0
 private let screenTitle = "BeRich"
 private let defaultErrorMessage = "К сожалению, что-то пошло не так"
 private let tryAgain = "Попробовать ещё раз"
+private let notFound = "Ничего не найдено"
 
 struct ListScreen_Previews: PreviewProvider {
     static var previews: some View {
