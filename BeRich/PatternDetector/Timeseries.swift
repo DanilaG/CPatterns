@@ -11,10 +11,12 @@ struct Timeseries {
     var startDate: Date {
         candlesticks[len - numberOfSignificantCandles].date
     }
+
     // Конец паттерна
     var endDate: Date {
         candlesticks[len - 1].date
     }
+
     // Наибольшая цена среди значимых свечей (нужно для отрисовки графика)
     var highPriceForSignificantCandles: Double {
         let significantCandles: [Candlestick] = Array(candlesticks[len - numberOfSignificantCandles ..< len])
@@ -22,6 +24,7 @@ struct Timeseries {
             max(candlestick.highPrice, partialResult)
         }
     }
+
     // Наименьшая цена среди значимых свечей (нужно для отрисовки графика)
     var lowPriceForSignificantCandles: Double {
         let significantCandles: [Candlestick] = Array(candlesticks[len - numberOfSignificantCandles ..< len])
