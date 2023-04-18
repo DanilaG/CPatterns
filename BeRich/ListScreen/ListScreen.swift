@@ -49,7 +49,8 @@ struct ListScreen: View {
                 List(tickers, id: \.title) { ticker in
                     TickerCellView(ticker: ticker)
                         .background(
-                            NavigationLink("", destination: DetailedTickerScreen(ticker: ticker)).opacity(0)
+                            NavigationLink("", destination: DetailedTickerScreen.make(title: ticker.title))
+                                .opacity(0)
                         )
                         .listRowSeparator(.hidden)
                         .listRowBackground(
