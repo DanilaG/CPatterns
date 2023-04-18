@@ -2,23 +2,70 @@
 import Foundation
 
 protocol TradingDataNetworkFetching {
-    func getTickers() async -> BinanceTikers?
+    func getBinanceTickers() async -> BinanceTiсkers?
 }
 
 final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObject {
-    func getTickers() async -> BinanceTikers? {
+    func getBinanceTickers() async -> BinanceTiсkers? {
         guard let url = BinanceApi.Method.exchangeInfo.url() else {
             assertionFailure()
             return nil
         }
+        print(url)
         do {
             let data = try await request(url)
-            let binanceTickers = try decodeJSON(type: BinanceTikers.self, from: data)
+            let binanceTickers = try decodeJSON(type: BinanceTiсkers.self, from: data)
             return binanceTickers
-        } catch URLError.badServerResponse {
-            print(URLError.badServerResponse)
-        } catch let DecodingError.dataCorrupted(error) {
+        } catch {
             print(error)
+        }
+        return nil
+    }
+
+    func getBinanceCandles(queryItems _: [URLQueryItem]?) async -> BinanceCandles? {
+        guard let url = BinanceApi.Method.candles.url() else {
+            assertionFailure()
+            return nil
+        }
+        print(url)
+        do {
+            let data = try await request(url)
+            let binanceCandles = try decodeJSON(type: BinanceCandles.self, from: data)
+            return binanceCandles
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+
+    func getMoexTickers() async -> [Ticker]? {
+        guard let url = MoexApi.Method.allTiсkers.url(tiсker: nil) else {
+            assertionFailure()
+            return nil
+        }
+        print(url)
+        do {
+            let data = try await request(url)
+            let moexTickers = try decodeJSON(type: MoexTiсkers.self, from: data)
+            let tickers = parseMoexTikers(moexTickers: moexTickers)
+            return tickers
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+
+    func getMoexCandles(ticker: String, queryItems: [URLQueryItem]) async -> [Stock]? {
+        guard let url = MoexApi.Method.candles.url(tiсker: ticker, queryItems: queryItems) else {
+            assertionFailure()
+            return nil
+        }
+        print(url)
+        do {
+            let data = try await request(url)
+            let moexCandles = try decodeJSON(type: MoexCandles.self, from: data)
+            let stocks = parseMoexCandles(moexCandles: moexCandles)
+            return stocks
         } catch {
             print(error)
         }
@@ -41,6 +88,115 @@ private func request(_ url: URL) async throws -> Data {
     print(httpURLResponse.statusCode)
     print(httpURLResponse.allHeaderFields)
     return data
+}
+
+private func parseMoexTikers(moexTickers: MoexTiсkers) -> [Ticker] {
+    var tickers = [Ticker]()
+    for i in 0 ..< moexTickers.history.data.count {
+        var title = ""
+        let shortName = moexTickers.history.data[i][3]
+        switch shortName {
+        case let .string(string):
+            print(string)
+            title = string
+        default:
+            break
+        }
+        var subTitle = ""
+        let fullName = moexTickers.history.data[i][2]
+        switch fullName {
+        case let .string(string):
+            print(string)
+            subTitle = string
+        default:
+            break
+        }
+        var closePrice = 0.0
+        let value = moexTickers.history.data[i][11]
+        switch value {
+        case let .double(double):
+            print(double)
+            closePrice = double
+        default:
+            break
+        }
+
+        var openPrice = 0.0
+        let openValue = moexTickers.history.data[i][6]
+        switch openValue {
+        case let .double(double):
+            print(double)
+            openPrice = double
+        default:
+            break
+        }
+
+        let priceChange = closePrice - openPrice
+        print(priceChange)
+        let ticker = Ticker(title: title, subTitle: subTitle, price: String(closePrice), priceChange: priceChange)
+        tickers.append(ticker)
+    }
+    return tickers
+}
+
+private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
+    let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
+
+    var stocks = [Stock]()
+    for i in 0 ..< moexCandles.candles.data.count {
+        var date = ""
+        let rawDate = moexCandles.candles.data[i][6]
+        switch rawDate {
+        case let .string(string):
+            print(string)
+            date = string
+        default:
+            break
+        }
+        var openPrice = 0.0
+        let openValue = moexCandles.candles.data[i][0]
+        switch openValue {
+        case let .double(double):
+            print(double)
+            openPrice = double
+        default:
+            break
+        }
+        var closePrice = 0.0
+        let closeValue = moexCandles.candles.data[i][1]
+        switch closeValue {
+        case let .double(double):
+            print(double)
+            closePrice = double
+        default:
+            break
+        }
+        var highPrice = 0.0
+        let highValue = moexCandles.candles.data[i][1]
+        switch highValue {
+        case let .double(double):
+            print(double)
+            highPrice = double
+        default:
+            break
+        }
+        var lowPrice = 0.0
+        let lowValue = moexCandles.candles.data[i][1]
+        switch lowValue {
+        case let .double(double):
+            print(double)
+            lowPrice = double
+        default:
+            break
+        }
+        let stock = Stock(date: dateFormatter.date(from: date) ?? Date(), openPrice: openPrice, closePrice: closePrice, highPrice: highPrice, lowPrice: lowPrice)
+        stocks.append(stock)
+    }
+    return stocks
 }
 
 enum NetworkingError: Error {

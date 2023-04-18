@@ -16,6 +16,20 @@ public struct Stock: Identifiable {
     public var lowPrice: Double
 
     public init(
+        date: Date,
+        openPrice: Double,
+        closePrice: Double,
+        highPrice: Double,
+        lowPrice: Double
+    ) {
+        self.date = date
+        self.openPrice = openPrice
+        self.closePrice = closePrice
+        self.highPrice = highPrice
+        self.lowPrice = lowPrice
+    }
+
+    public init(
         date: String,
         openPrice: Double,
         closePrice: Double,
