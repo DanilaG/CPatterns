@@ -1,6 +1,15 @@
 import Foundation
 
 enum Fakes {
+    // TODO: change date format
+    static let patterns: [Pattern] = [
+        Pattern(title: "Кольцо дракона", lowPrice: 160, highPrice: 168, startTimePeriod: "31/03/2023", endTimePeriod: "06/04/2023"),
+        Pattern(title: "Адская колесница", lowPrice: 155, highPrice: 165, startTimePeriod: "08/04/2023", endTimePeriod: "10/04/2023"),
+        Pattern(title: "Черная карта", lowPrice: 146, highPrice: 160, startTimePeriod: "14/04/2023", endTimePeriod: "16/04/2023"),
+        Pattern(title: "Паттерн 2", lowPrice: 152, highPrice: 165, startTimePeriod: "19/04/2023", endTimePeriod: "25/04/2023"),
+        Pattern(title: "Паттерн 3", lowPrice: 155, highPrice: 165, startTimePeriod: "22/03/2023", endTimePeriod: "25/03/2023"),
+    ]
+
     static let tickers: [Ticker] = [
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
@@ -73,8 +82,6 @@ enum Fakes {
         Stock(date: "04/28/2023", openPrice: 157.97, closePrice: 157.65, highPrice: 158.49, lowPrice: 155.98),
         Stock(date: "04/29/2023", openPrice: 159.37, closePrice: 160.77, highPrice: 161.05, lowPrice: 159.35),
         Stock(date: "04/30/2023", openPrice: 161.53, closePrice: 162.36, highPrice: 162.47, lowPrice: 161.271),
-        ////            Stock(name: "AAPL", date: "04/31/2023", openPrice: 162.44, closePrice: 164.90, highPrice: 165.00, lowPrice: 161.91),
-        //            Stock(name: "AAPL", date: "05/03/2023", openPrice: 164.27, closePrice: 166.17, highPrice: 166.29, lowPrice: 164.22),
     ]
 
     static let stocksInTenMinutesPeriod: [Stock] = [
