@@ -12,4 +12,7 @@ extension Color {
     static let redMain = Color("red.main")
     static let shadow = Color("shadow")
     static let backgroundSearch = Color("background.search")
+    static let patternDarkGreen = Color("pattern.green.dark")
+    static let patternPink = Color("pattern.pink")
+    static let patternBlue = Color("pattern.blue")
 }

@@ -13,9 +13,9 @@ struct DetailedTickerScreen: View {
         ScrollView {
             ChartView(stocks: ticker.stocks(timePeriod: selectedTimePeriod),
                       timePeriod: selectedTimePeriod)
-
             changeTimePeriodButtons()
                 .navigationBarTitle(ticker.title)
+            PatternListView(patterns: Fakes.patterns)
         }
     }
 

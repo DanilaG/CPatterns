@@ -3,9 +3,16 @@ import SwiftUI
 
 struct CandlesView: View {
     let stocks: [Stock]
-
+    let patterns = Fakes.patterns
     var body: some View {
         Chart {
+            ForEach(patterns) { pattern in // Область паттерна
+                RectangleMark(xStart: .value("Date", pattern.startTimePeriod, unit: .day),
+                              xEnd: .value("Date", pattern.endTimePeriod, unit: .day),
+                              yStart: .value("Low", pattern.lowPrice),
+                              yEnd: .value("High", pattern.highPrice))
+                    .foregroundStyle(Color.patternBlue)
+            }
             ForEach(stocks) { stock in
                 // Тень свечи (минимум и максимум за день)
                 RectangleMark(
