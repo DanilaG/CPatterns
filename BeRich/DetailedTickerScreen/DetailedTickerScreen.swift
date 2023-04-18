@@ -2,7 +2,8 @@ import SwiftUI
 
 struct DetailedTickerScreen: View {
     @StateObject var viewModel: DetailedTickerScreenViewModel
-
+    @State var patternId = 0
+    @State var buttonTapToggle = true
     init(viewModel: DetailedTickerScreenViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -51,17 +52,23 @@ struct DetailedTickerScreen: View {
     func present(_ chart: DetailedTickerScreenViewModel.Chart) -> some View {
         List {
             ChartView(stocks: chart.candles,
-                      detectedPatterns: chart.detectedPatterns,
-                      timePeriod: chart.parameters.period)
+                      patternViewData: toViewData(chart.detectedPatterns), timePeriod: chart.parameters.period,
+                      patternId: $patternId,
+                      buttonTapToggle: $buttonTapToggle)
                 .listRowSeparator(.hidden)
             changeTimePeriodButtons(chart.parameters)
                 .navigationBarTitle(chart.parameters.tickerTitle)
                 .listRowSeparator(.hidden)
-            ForEach(chart.detectedPatterns) { pattern in
-                PatternCellView(detectedPattern: pattern)
+            ForEach(toViewData(chart.detectedPatterns), id: \.detectedPattern.id) { pattern in
+                PatternCellView(patternViewData: pattern)
                     .listRowSeparator(.hidden)
                     .onTapGesture {
-                        print(pattern.id)
+                        for (index, value) in chart.candles.enumerated() {
+                            if value.date == pattern.detectedPattern.startDate {
+                                patternId = index
+                                buttonTapToggle.toggle()
+                            }
+                        }
                     }
             }
         }
@@ -92,10 +99,17 @@ struct DetailedTickerScreen: View {
 
 private let defaultErrorMessage = "Ошибка загрузки"
 
-struct DetailedTickerScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        DetailedTickerScreen(
-            viewModel: Fakes.makeDetailedTickerScreenViewModel()
+private func toViewData(_ patterns: [DetectedPattern]) -> [PatternViewData] {
+    let patternColors: [Color] = [.patternDarkGreen, .patternPink, .patternBlue, .patternDarkPink, .patternBrown, .patternDarkBlue]
+    return patterns.enumerated().map {
+        PatternViewData(
+            detectedPattern: $0.element,
+            color: patternColors[$0.offset % patternColors.count]
         )
     }
+}
+
+struct PatternViewData {
+    let detectedPattern: DetectedPattern
+    let color: Color
 }

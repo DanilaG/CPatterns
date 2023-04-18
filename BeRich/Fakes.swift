@@ -73,8 +73,6 @@ enum Fakes {
         Stock(date: "04/28/2023 10:00:00", openPrice: 157.97, closePrice: 157.65, highPrice: 158.49, lowPrice: 155.98),
         Stock(date: "04/29/2023 10:00:00", openPrice: 159.37, closePrice: 160.77, highPrice: 161.05, lowPrice: 159.35),
         Stock(date: "04/30/2023 10:00:00", openPrice: 161.53, closePrice: 162.36, highPrice: 162.47, lowPrice: 161.271),
-        ////            Stock(name: "AAPL", date: "04/31/2023", openPrice: 162.44, closePrice: 164.90, highPrice: 165.00, lowPrice: 161.91),
-        //            Stock(name: "AAPL", date: "05/03/2023", openPrice: 164.27, closePrice: 166.17, highPrice: 166.29, lowPrice: 164.22),
     ]
 
     static let stocksInTenMinutesPeriod: [Stock] = [
@@ -242,9 +240,7 @@ enum Fakes {
     }
 
     static func makeDetailedTickerScreenViewModel() -> DetailedTickerScreenViewModel {
-        DetailedTickerScreenViewModel(tickerTitle: "test",
-                                      fetcher: TradingDataNetworkFetchingFakes(),
-                                      patternDetector: PatternDetector())
+        DetailedTickerScreenViewModel(tickerTitle: "test", fetcher: TradingDataNetworkFetchingFakes(), patternDetector: PatternDetector())
     }
 }
 

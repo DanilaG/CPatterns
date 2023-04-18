@@ -15,4 +15,7 @@ extension Color {
     static let patternDarkGreen = Color("pattern.green.dark")
     static let patternPink = Color("pattern.pink")
     static let patternBlue = Color("pattern.blue")
+    static let patternBrown = Color("pattern.brown")
+    static let patternDarkPink = Color("pattern.pink.dark")
+    static let patternDarkBlue = Color("pattern.blue.dark")
 }

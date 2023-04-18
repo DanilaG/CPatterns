@@ -1,19 +1,19 @@
 import SwiftUI
 
 struct PatternCellView: View {
-    var detectedPattern: DetectedPattern
+    @State var patternViewData: PatternViewData
     let patternColors: [Color] = [.patternDarkGreen, .patternPink, .patternBlue]
     @State private var isFavourite = false
 
     var body: some View {
         Group {
             HStack {
-                Text(detectedPattern.pattern.title)
+                Text(patternViewData.detectedPattern.title)
                     .font(.title2)
                     .foregroundColor(.black)
                 Spacer()
                 Rectangle()
-                    .foregroundColor(patternColors.randomElement())
+                    .foregroundColor(patternViewData.color)
                     .padding([.trailing, .top, .bottom], -20)
                     .frame(width: 52)
             }

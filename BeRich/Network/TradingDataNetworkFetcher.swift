@@ -194,7 +194,13 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
         default:
             break
         }
-        let stock = Stock(date: dateFormatter.date(from: date) ?? Date(), openPrice: openPrice, closePrice: closePrice, highPrice: highPrice, lowPrice: lowPrice)
+        let stock = Stock(
+            date: dateFormatter.date(from: date) ?? Date(timeIntervalSinceNow: 0),
+            openPrice: openPrice,
+            closePrice: closePrice,
+            highPrice: highPrice,
+            lowPrice: lowPrice
+        )
         stocks.append(stock)
     }
     return stocks
