@@ -1,37 +1,75 @@
 import SwiftUI
 
 struct DetailedTickerScreen: View {
-    @State var selectedTimePeriod: ChartTimePeriod = .day
+    @StateObject var viewModel: DetailedTickerScreenViewModel
 
-    init(ticker: Ticker) {
-        self.ticker = ticker
+    init(viewModel: DetailedTickerScreenViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    private let ticker: Ticker
-
     var body: some View {
-        ScrollView {
-            ChartView(stocks: ticker.stocks(timePeriod: selectedTimePeriod),
-                      timePeriod: selectedTimePeriod)
-            changeTimePeriodButtons()
-                .navigationBarTitle(ticker.title)
-            PatternListView(patterns: Fakes.patterns)
+        Group {
+            switch viewModel.state {
+            case let .initial(parameters):
+                Color.background
+                    .navigationTitle(parameters.tickerTitle)
+            case let .loading(parameters):
+                loading()
+                    .navigationTitle(parameters.tickerTitle)
+            case let .loaded(chart):
+                present(chart)
+                    .navigationTitle(chart.parameters.tickerTitle)
+            case let .error(parameters):
+                error()
+                    .navigationTitle(parameters.tickerTitle)
+            }
+        }
+        .onAppear {
+            viewModel.send(event: .didAppear)
         }
     }
 
-    @ViewBuilder func changeTimePeriodButtons() -> some View {
+    private func loading() -> some View {
+        ZStack {
+            Color.background
+            ProgressView()
+        }
+    }
+
+    private func error() -> some View {
+        ZStack {
+            Color.background
+            VStack(spacing: 12.0) {
+                Text(defaultErrorMessage)
+                    .foregroundColor(Color(UIColor.label))
+            }
+            .multilineTextAlignment(.center)
+        }
+    }
+
+    func present(_ chart: DetailedTickerScreenViewModel.Chart) -> some View {
+        ScrollView {
+            ChartView(stocks: chart.candles,
+                      timePeriod: chart.parameters.period)
+            changeTimePeriodButtons(chart.parameters)
+                .navigationBarTitle(chart.parameters.tickerTitle)
+            PatternListView(patterns: chart.patterns)
+        }
+    }
+
+    @ViewBuilder func changeTimePeriodButtons(_ parameters: DetailedTickerScreenViewModel.ChartParameters) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(ChartTimePeriod.allCases) { timePeriod in
 
                     Button {
-                        selectedTimePeriod = timePeriod
+                        viewModel.send(event: .didChangeTimePeriod(timePeriod))
                     } label: {
                         Text(timePeriod.title)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
-                            .background(selectedTimePeriod == timePeriod ? Color.blueMain : Color.whiteMain).cornerRadius(20)
-                            .foregroundColor(selectedTimePeriod == timePeriod ? Color.whiteMain : Color.blueMain)
+                            .background(parameters.period == timePeriod ? Color.blueMain : Color.whiteMain).cornerRadius(20)
+                            .foregroundColor(parameters.period == timePeriod ? Color.whiteMain : Color.blueMain)
                             .addBorder(Color.blueMain, width: 1, cornerRadius: 20)
                     }
                 }
@@ -41,26 +79,12 @@ struct DetailedTickerScreen: View {
     }
 }
 
-extension Ticker {
-    func stocks(timePeriod: ChartTimePeriod) -> [Stock] {
-        switch timePeriod {
-        case .tenMin:
-            return Fakes.stocksInTenMinutesPeriod
-        case .thirtyMin:
-            return Fakes.stocksInThirtyMinutesPeriod
-        default:
-            return Fakes.defaultStocks
-        }
-    }
-}
+private let defaultErrorMessage = "Ошибка загрузки"
 
 struct DetailedTickerScreen_Previews: PreviewProvider {
     static var previews: some View {
         DetailedTickerScreen(
-            ticker: Ticker(title: "Title",
-                           subTitle: "Subtitle",
-                           price: "price",
-                           priceChange: 100.0)
+            viewModel: DetailedTickerScreenViewModel(tickerTitle: "Test")
         )
     }
 }
