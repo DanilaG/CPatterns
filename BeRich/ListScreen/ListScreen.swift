@@ -32,7 +32,9 @@ struct ListScreen: View {
             .foregroundColor(.white)
             .navigationTitle(screenTitle)
             .task {
-                await tradingDataNetworkFetcher.getMoexTickers()
+//                await tradingDataNetworkFetcher.getMoexTickers()
+               let data = await tradingDataNetworkFetcher.getBinanceCandles(queryItems: nil)
+                print(data)
             }
         }
         .accentColor(.white)

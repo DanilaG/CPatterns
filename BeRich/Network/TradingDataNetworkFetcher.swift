@@ -7,7 +7,7 @@ protocol TradingDataNetworkFetching {
 
 final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObject {
     func getBinanceTickers() async -> BinanceTikers? {
-        guard let url = BinanceApi.Method.exchangeInfo.url() else {
+        guard let url = BinanceApi.Method.exchangeInfo.url(queryItems: nil) else {
             assertionFailure()
             return nil
         }
@@ -15,6 +15,29 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
             let data = try await request(url)
             let binanceTickers = try decodeJSON(type: BinanceTikers.self, from: data)
             return binanceTickers
+        } catch NetworkingError.requestFailed {
+            print(NetworkingError.requestFailed)
+        } catch let DecodingError.dataCorrupted(error) {
+            print(error)
+        } catch {
+            print(error)
+        }
+        return nil
+    }
+
+    func getBinanceCandles(queryItems: [URLQueryItem]?) async -> BinanceCandles? {
+        var queryItemss = [URLQueryItem]()
+        queryItemss.append(URLQueryItem(name: "symbol", value: "ETHBTC"))
+        queryItemss.append(URLQueryItem(name: "interval", value: "15m"))
+        guard let url = BinanceApi.Method.candles.url(queryItems: queryItemss) else {
+            assertionFailure()
+            return nil
+        }
+        print(url)
+        do {
+            let data = try await request(url)
+            let binanceCandles = try decodeJSON(type: BinanceCandles.self, from: data)
+            return binanceCandles
         } catch NetworkingError.requestFailed {
             print(NetworkingError.requestFailed)
         } catch let DecodingError.dataCorrupted(error) {
