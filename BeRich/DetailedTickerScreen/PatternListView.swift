@@ -2,12 +2,11 @@ import SwiftUI
 
 struct PatternListView: View {
     @State var patterns: [Pattern] = Fakes.patterns
-    
-    
+
     init(patterns: [Pattern]) {
         self.patterns = patterns
     }
-     
+
     var body: some View {
         VStack {
             NavigationView {

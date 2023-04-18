@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PatternCellView: View {
-    let pattern: Pattern
+    @State var pattern: Pattern
     let patternColors: [Color] = [.patternDarkGreen, .patternPink, .patternBlue]
     @State private var isFavourite = false
 
@@ -12,10 +12,6 @@ struct PatternCellView: View {
                     .font(.title2)
                     .foregroundColor(.black)
                 Spacer()
-                Text(String(pattern.count))
-                    .font(.title)
-                    .foregroundColor(Color.yellowMain)
-                    .padding(.trailing, 8)
                 Rectangle()
                     .foregroundColor(patternColors.randomElement())
                     .padding([.trailing, .top, .bottom], -20)
