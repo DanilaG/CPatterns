@@ -74,7 +74,7 @@ final class PatternRecognitionTests: XCTestCase {
         XCTAssertEqual(detectedPatterns.count, 0)
     }
 
-    private func getCSVData() -> [Candlestick] {
+    private func getCSVData() -> [PatternDetectorCandle] {
         let path = path(forResource: "sber", ofType: "csv")!
 
         let content = try! String(contentsOfFile: path)
@@ -93,7 +93,7 @@ final class PatternRecognitionTests: XCTestCase {
                 let lowPrice = Double($0[6])!
                 let closePrice = Double($0[7])!
                 let date = DateFormatting.csvDateFormatter.date(from: $0[2])!
-                return Candlestick(openPrice: openPrice,
+                return PatternDetectorCandle(openPrice: openPrice,
                                    highPrice: highPrice,
                                    lowPrice: lowPrice,
                                    closePrice: closePrice,

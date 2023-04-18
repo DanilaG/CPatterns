@@ -3,7 +3,7 @@ import Foundation
 struct PatternDetector {
     func detectPatterns(candles: [Stock]) -> [DetectedPattern] {
         let candlesticks = candles.map {
-            Candlestick(candle: $0)
+            PatternDetectorCandle(candle: $0)
         }
 
         var detectedPatterns: [DetectedPattern] = []
@@ -16,7 +16,7 @@ struct PatternDetector {
         return detectedPatterns
     }
 
-    func detectPattern(candelsticks: [Candlestick],
+    func detectPattern(candelsticks: [PatternDetectorCandle],
                        pattern: CandlePattern) -> [DetectedPattern]
     {
         let patternLenght = pattern.patternLenght

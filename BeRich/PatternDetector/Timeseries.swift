@@ -6,7 +6,7 @@ struct Timeseries {
     // Количество значимых свечей
     // Значимые свечи всегда в конце
     let numberOfSignificantCandles: Int
-    let candlesticks: [Candlestick]
+    let candlesticks: [PatternDetectorCandle]
     // Начало паттерна
     var startDate: Date {
         candlesticks[len - numberOfSignificantCandles].date
@@ -19,7 +19,7 @@ struct Timeseries {
 
     // Наибольшая цена среди значимых свечей (нужно для отрисовки графика)
     var highPriceForSignificantCandles: Double {
-        let significantCandles: [Candlestick] = Array(candlesticks[len - numberOfSignificantCandles ..< len])
+        let significantCandles: [PatternDetectorCandle] = Array(candlesticks[len - numberOfSignificantCandles ..< len])
         return significantCandles.reduce(into: DBL_MIN) { partialResult, candlestick in
             max(candlestick.highPrice, partialResult)
         }
@@ -27,7 +27,7 @@ struct Timeseries {
 
     // Наименьшая цена среди значимых свечей (нужно для отрисовки графика)
     var lowPriceForSignificantCandles: Double {
-        let significantCandles: [Candlestick] = Array(candlesticks[len - numberOfSignificantCandles ..< len])
+        let significantCandles: [PatternDetectorCandle] = Array(candlesticks[len - numberOfSignificantCandles ..< len])
         return significantCandles.reduce(into: DBL_MAX) { partialResult, candlestick in
             min(candlestick.lowPrice, partialResult)
         }
@@ -35,7 +35,7 @@ struct Timeseries {
 
     init(len: Int,
          numberOfSignificantCandles: Int,
-         candlesticks: [Candlestick])
+         candlesticks: [PatternDetectorCandle])
     {
         self.len = len
         self.numberOfSignificantCandles = numberOfSignificantCandles

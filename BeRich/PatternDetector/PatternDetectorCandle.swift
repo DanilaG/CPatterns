@@ -1,6 +1,6 @@
 import Foundation
 
-struct Candlestick {
+struct PatternDetectorCandle {
     let openPrice: Double
     let highPrice: Double
     let lowPrice: Double

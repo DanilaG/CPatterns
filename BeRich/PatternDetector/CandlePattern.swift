@@ -225,10 +225,10 @@ extension CandlePattern {
     }
 }
 
-private func up_body_gap(_ c1: Candlestick, _ c2: Candlestick) -> Bool {
+private func up_body_gap(_ c1: PatternDetectorCandle, _ c2: PatternDetectorCandle) -> Bool {
     c1.tp_body < c2.bm_body
 }
 
-private func down_body_gap(_ c1: Candlestick, _ c2: Candlestick) -> Bool {
+private func down_body_gap(_ c1: PatternDetectorCandle, _ c2: PatternDetectorCandle) -> Bool {
     c1.bm_body > c2.tp_body
 }
