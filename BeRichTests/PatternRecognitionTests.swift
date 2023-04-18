@@ -94,10 +94,10 @@ final class PatternRecognitionTests: XCTestCase {
                 let closePrice = Double($0[7])!
                 let date = DateFormatting.csvDateFormatter.date(from: $0[2])!
                 return PatternDetectorCandle(openPrice: openPrice,
-                                   highPrice: highPrice,
-                                   lowPrice: lowPrice,
-                                   closePrice: closePrice,
-                                   date: date)
+                                             highPrice: highPrice,
+                                             lowPrice: lowPrice,
+                                             closePrice: closePrice,
+                                             date: date)
             }
         return candles
     }
