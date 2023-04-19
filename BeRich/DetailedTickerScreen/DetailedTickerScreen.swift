@@ -93,7 +93,7 @@ private let defaultErrorMessage = "Ошибка загрузки"
 struct DetailedTickerScreen_Previews: PreviewProvider {
     static var previews: some View {
         DetailedTickerScreen(
-            viewModel: DetailedTickerScreenViewModel(tickerTitle: "Test")
+            viewModel: Fakes.makeDetailedTickerScreenViewModel()
         )
     }
 }

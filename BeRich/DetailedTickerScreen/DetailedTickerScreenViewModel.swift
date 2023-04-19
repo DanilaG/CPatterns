@@ -6,7 +6,7 @@ final class DetailedTickerScreenViewModel: ObservableObject {
 
     private let input = PassthroughSubject<Event, Never>()
 
-    init(tickerTitle: String) {
+    init(tickerTitle: String, fetcher: TradingDataNetworkFetching) {
         state = .initial(ChartParameters(tickerTitle: tickerTitle, period: .day))
 
         Publishers.system(
@@ -14,7 +14,7 @@ final class DetailedTickerScreenViewModel: ObservableObject {
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.loading(),
+                Self.loading(fetcher: fetcher),
                 Self.userInput(input: input.eraseToAnyPublisher()),
             ]
         )
@@ -93,29 +93,29 @@ extension DetailedTickerScreenViewModel {
         }
     }
 
-    static func loading() -> Feedback<State, Event> {
+    static func loading(fetcher: TradingDataNetworkFetching) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(chartParameters) = state else { return Empty().eraseToAnyPublisher() }
+            return Future { promise in
+                Task.detached {
+                    #warning("TODO: remove URLQueryItem")
+                    var q = [URLQueryItem]()
+                    q.append(URLQueryItem(name: "interval", value: "24"))
+                    q.append(URLQueryItem(name: "iss.reverse", value: "true"))
 
-            #warning("TODO: remove")
-            return fakeLoad(chartParameters: chartParameters)
-        }
-    }
-
-    static func fakeLoad(chartParameters: ChartParameters) -> AnyPublisher<Event, Never> {
-        let candles: [Stock]
-        switch chartParameters.period {
-        case .tenMin:
-            candles = Fakes.stocksInTenMinutesPeriod
-        case .thirtyMin:
-            candles = Fakes.stocksInThirtyMinutesPeriod
-        default:
-            candles = Fakes.defaultStocks
-        }
-
-        return Just(Event.didLoad(Chart(parameters: chartParameters, candles: candles, patterns: Fakes.patterns)))
-            .delay(for: 1, scheduler: RunLoop.main)
+                    guard let candles = await fetcher.getMoexCandles(ticker: chartParameters.tickerTitle, queryItems: q) else {
+                        return promise(.success(Event.failedLoad))
+                    }
+                    #warning("TODO: add patterns")
+                    promise(.success(Event.didLoad(Chart(
+                        parameters: chartParameters,
+                        candles: candles,
+                        patterns: Fakes.patterns
+                    ))))
+                }
+            }
             .eraseToAnyPublisher()
+        }
     }
 
     static func userInput(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {

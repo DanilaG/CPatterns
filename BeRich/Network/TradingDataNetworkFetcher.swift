@@ -4,6 +4,7 @@ import Foundation
 protocol TradingDataNetworkFetching {
     func getBinanceTickers() async -> BinanceTiсkers?
     func getMoexTickers() async -> [Ticker]?
+    func getMoexCandles(ticker: String, queryItems: [URLQueryItem]) async -> [Stock]?
 }
 
 final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObject {

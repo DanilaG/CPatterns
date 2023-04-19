@@ -249,10 +249,18 @@ enum Fakes {
     static func makeListScreenViewModel() -> ListScreenViewModel {
         ListScreenViewModel(fetcher: TradingDataNetworkFetchingFakes())
     }
+
+    static func makeDetailedTickerScreenViewModel() -> DetailedTickerScreenViewModel {
+        DetailedTickerScreenViewModel(tickerTitle: "test", fetcher: TradingDataNetworkFetchingFakes())
+    }
 }
 
 private extension Fakes {
     class TradingDataNetworkFetchingFakes: TradingDataNetworkFetching {
+        func getMoexCandles(ticker _: String, queryItems _: [URLQueryItem]) async -> [Stock]? {
+            defaultStocks
+        }
+
         func getBinanceTickers() async -> BinanceTiсkers? {
             nil
         }
