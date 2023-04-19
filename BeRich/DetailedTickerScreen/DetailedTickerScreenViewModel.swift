@@ -114,14 +114,9 @@ extension DetailedTickerScreenViewModel {
             candles = Fakes.defaultStocks
         }
 
-        return Just(
-            [
-                Event.didLoad(Chart(parameters: chartParameters, candles: candles, patterns: Fakes.patterns)),
-                Event.failedLoad,
-            ].randomElement() ?? Event.failedLoad
-        )
-        .delay(for: 1, scheduler: RunLoop.main)
-        .eraseToAnyPublisher()
+        return Just(Event.didLoad(Chart(parameters: chartParameters, candles: candles, patterns: Fakes.patterns)))
+            .delay(for: 1, scheduler: RunLoop.main)
+            .eraseToAnyPublisher()
     }
 
     static func userInput(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
