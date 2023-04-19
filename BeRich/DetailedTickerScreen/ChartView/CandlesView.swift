@@ -6,7 +6,7 @@ struct CandlesView: View {
     let patterns = Fakes.patterns
     @Binding var selectedTimePeriod: ChartTimePeriod
     @Binding var selectedChartType: ChartType
-    private var currencyFormater: Decimal.FormatStyle.Currency = Decimal.FormatStyle.Currency.currency(code: "RUB")
+    private lazy var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
 
     var body: some View {
         Chart {

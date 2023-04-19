@@ -13,7 +13,7 @@ struct InternalChartView: View {
     @Binding private var selectedElement: Stock?
     @State private var selectedTimePeriod: ChartTimePeriod
     @State private var selectedChartType: ChartType = .candleChart
-    private var currencyFormater: Decimal.FormatStyle.Currency = Decimal.FormatStyle.Currency.currency(code: "RUB")
+    private lazy var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
 
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
