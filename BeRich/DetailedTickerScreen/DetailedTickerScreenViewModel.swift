@@ -59,7 +59,6 @@ extension DetailedTickerScreenViewModel {
 
 extension DetailedTickerScreenViewModel {
     static func reduce(_ state: State, _ event: Event) -> State {
-        print(event)
         switch state {
         case let .initial(parameters):
             switch event {

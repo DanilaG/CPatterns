@@ -24,6 +24,7 @@ struct DetailedTickerScreen: View {
                     .navigationTitle(parameters.tickerTitle)
             }
         }
+        .background(Color.background)
         .onAppear {
             viewModel.send(event: .didAppear)
         }
@@ -48,13 +49,21 @@ struct DetailedTickerScreen: View {
     }
 
     func present(_ chart: DetailedTickerScreenViewModel.Chart) -> some View {
-        ScrollView {
-            ChartView(stocks: chart.candles,
-                      timePeriod: chart.parameters.period)
+        List {
+            ChartView(stocks: chart.candles, timePeriod: chart.parameters.period)
+                .listRowSeparator(.hidden)
             changeTimePeriodButtons(chart.parameters)
                 .navigationBarTitle(chart.parameters.tickerTitle)
-            PatternListView(patterns: chart.patterns)
+                .listRowSeparator(.hidden)
+            ForEach(chart.patterns) { pattern in
+                PatternCellView(pattern: pattern)
+                    .listRowSeparator(.hidden)
+                    .onTapGesture {
+                        print(pattern.id)
+                    }
+            }
         }
+        .listStyle(.plain)
     }
 
     @ViewBuilder func changeTimePeriodButtons(_ parameters: DetailedTickerScreenViewModel.ChartParameters) -> some View {
