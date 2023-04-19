@@ -1,10 +1,11 @@
 import Foundation
 
-struct Candlestick {
+struct PatternDetectorCandle {
     let openPrice: Double
     let highPrice: Double
     let lowPrice: Double
     let closePrice: Double
+    let date: Date
 
     let hb: Double
     let tp_body: Double
@@ -26,12 +27,14 @@ struct Candlestick {
     init(openPrice: Double,
          highPrice: Double,
          lowPrice: Double,
-         closePrice: Double)
+         closePrice: Double,
+         date: Date)
     {
         self.openPrice = openPrice
         self.highPrice = highPrice
         self.lowPrice = lowPrice
         self.closePrice = closePrice
+        self.date = date
         hb = abs(closePrice - openPrice)
         tp_body = max(openPrice, closePrice)
         bm_body = min(openPrice, closePrice)
@@ -48,6 +51,14 @@ struct Candlestick {
         long_white_body = long_body && white_body
         no_ls = ext_near(x: lowPrice, y: bm_body)
         no_us = ext_near(x: highPrice, y: tp_body)
+    }
+
+    init(candle: Stock) {
+        self.init(openPrice: candle.openPrice,
+                  highPrice: candle.highPrice,
+                  lowPrice: candle.lowPrice,
+                  closePrice: candle.closePrice,
+                  date: candle.date)
     }
 }
 
