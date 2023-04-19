@@ -98,12 +98,7 @@ extension DetailedTickerScreenViewModel {
             guard case let .loading(chartParameters) = state else { return Empty().eraseToAnyPublisher() }
             return Future { promise in
                 Task.detached {
-                    #warning("TODO: remove URLQueryItem")
-                    var q = [URLQueryItem]()
-                    q.append(URLQueryItem(name: "interval", value: "24"))
-                    q.append(URLQueryItem(name: "iss.reverse", value: "true"))
-
-                    guard let candles = await fetcher.getMoexCandles(ticker: chartParameters.tickerTitle, queryItems: q) else {
+                    guard let candles = await fetcher.getMoexCandles(ticker: chartParameters.tickerTitle, timePeriod: chartParameters.period) else {
                         return promise(.success(Event.failedLoad))
                     }
                     #warning("TODO: add patterns")

@@ -2,11 +2,10 @@ import Foundation
 
 enum ChartTimePeriod: Int {
     case tenMin
-    case thirtyMin
     case hour
     case day
+    case week
     case month
-    case year
 }
 
 extension ChartTimePeriod: Identifiable {
@@ -22,41 +21,41 @@ extension ChartTimePeriod {
         switch self {
         case .tenMin:
             return "10 МИН"
-        case .thirtyMin:
-            return "30 МИН"
         case .hour:
             return "Ч"
         case .day:
             return "Д"
+        case .week:
+            return "Н"
         case .month:
             return "M"
-        case .year:
-            return "Г"
         }
     }
 
     var unit: Calendar.Component {
         switch self {
-        case .tenMin, .thirtyMin:
+        case .tenMin:
             return .hour
         case .hour:
             return .day
-        case .day:
+        case .day, .week:
             return .month
-        case .month, .year:
+        case .month:
             return .year
         }
     }
 
     var format: Date.FormatStyle {
         switch self {
-        case .tenMin, .thirtyMin:
+        case .tenMin:
             return .dateTime.hour()
         case .hour:
             return .dateTime.day()
         case .day:
             return .dateTime.month()
-        case .month, .year:
+        case .week:
+            return .dateTime.week()
+        case .month:
             return .dateTime.year()
         }
     }

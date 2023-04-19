@@ -257,7 +257,7 @@ enum Fakes {
 
 private extension Fakes {
     class TradingDataNetworkFetchingFakes: TradingDataNetworkFetching {
-        func getMoexCandles(ticker _: String, queryItems _: [URLQueryItem]) async -> [Stock]? {
+        func getMoexCandles(ticker _: String, timePeriod _: ChartTimePeriod) async -> [Stock]? {
             defaultStocks
         }
 
