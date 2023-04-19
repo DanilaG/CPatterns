@@ -6,7 +6,7 @@ struct CandlesView: View {
     let patterns = Fakes.patterns
     @Binding var selectedTimePeriod: ChartTimePeriod
     @Binding var selectedChartType: ChartType
-    private lazy var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
+    var currencyFormater: Decimal.FormatStyle.Currency = Decimal.FormatStyle.Currency.currency(code: "RUB")
 
     var body: some View {
         Chart {
@@ -73,7 +73,7 @@ struct CandlesView: View {
                 AxisValueLabel(format: currencyFormater)
             }
         }
-        .chartYScale(domain: [Stock.stockArrayMinPriceValue(stocks), Stock.stockArrayMaxPriceValue(stocks)])
+        .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
         .chartXAxis {
             AxisMarks(values: .stride(by: selectedTimePeriod.unit, count: 1)) {
                 AxisValueLabel(format: selectedTimePeriod.format)

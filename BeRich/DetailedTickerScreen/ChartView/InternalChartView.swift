@@ -13,7 +13,7 @@ struct InternalChartView: View {
     @Binding private var selectedElement: Stock?
     @State private var selectedTimePeriod: ChartTimePeriod
     @State private var selectedChartType: ChartType = .candleChart
-    private lazy var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
+    private var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
 
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
@@ -82,7 +82,7 @@ struct InternalChartView: View {
                                             AxisValueLabel(format: currencyFormater)
                                         }
                                     }
-                                    .chartYScale(domain: [Stock.stockArrayMinPriceValue(stocks), Stock.stockArrayMaxPriceValue(stocks)])
+                                    .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
                                     .chartXAxis {
                                         AxisMarks(values: .automatic(desiredCount: 10))
                                     }
@@ -142,7 +142,7 @@ struct InternalChartView: View {
                         AxisValueLabel(format: currencyFormater)
                     }
                 }
-                .chartYScale(domain: [Stock.stockArrayMinPriceValue(stocks), Stock.stockArrayMaxPriceValue(stocks)])
+                .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
                 .frame(width: 25)
                 .background(.white)
 
