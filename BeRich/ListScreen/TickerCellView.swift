@@ -18,10 +18,10 @@ struct TickerCellView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 0) {
-                    Text(ticker.price)
+                    Text(String(describing: ticker.price))
                         .font(.title)
                         .foregroundColor(Color.yellowMain)
-                    Text(String(ticker.priceChange))
+                    Text(String(describing: ticker.priceChange))
                         .frame(width: 70)
                         .font(Font.subheadline)
                         .foregroundColor(Color.white)
@@ -38,8 +38,8 @@ struct TickerCellView: View {
 
 extension Ticker {
     var priceChangeColor: Color {
-        if priceChange > 0 { return .greenMain }
-        if priceChange < 0 { return .redMain }
+        if priceChange.amount > 0 { return .greenMain }
+        if priceChange.amount < 0 { return .redMain }
         return .gray400
     }
 }
@@ -48,7 +48,7 @@ struct TickerCellView_Previews: PreviewProvider {
     static var previews: some View {
         TickerCellView(ticker: Ticker(title: "Title",
                                       subTitle: "Subtitle",
-                                      price: "100$",
-                                      priceChange: 100))
+                                      price: Money(amount: 100, currency: .rub),
+                                      priceChange: Money(amount: 100, currency: .rub)))
     }
 }

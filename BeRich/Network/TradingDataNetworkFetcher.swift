@@ -3,6 +3,7 @@ import Foundation
 
 protocol TradingDataNetworkFetching {
     func getBinanceTickers() async -> BinanceTiсkers?
+    func getMoexTickers() async -> [Ticker]?
 }
 
 final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObject {
@@ -97,7 +98,6 @@ private func parseMoexTikers(moexTickers: MoexTiсkers) -> [Ticker] {
         let shortName = moexTickers.history.data[i][3]
         switch shortName {
         case let .string(string):
-            print(string)
             title = string
         default:
             break
@@ -106,7 +106,6 @@ private func parseMoexTikers(moexTickers: MoexTiсkers) -> [Ticker] {
         let fullName = moexTickers.history.data[i][2]
         switch fullName {
         case let .string(string):
-            print(string)
             subTitle = string
         default:
             break
@@ -115,7 +114,6 @@ private func parseMoexTikers(moexTickers: MoexTiсkers) -> [Ticker] {
         let value = moexTickers.history.data[i][11]
         switch value {
         case let .double(double):
-            print(double)
             closePrice = double
         default:
             break
@@ -125,15 +123,14 @@ private func parseMoexTikers(moexTickers: MoexTiсkers) -> [Ticker] {
         let openValue = moexTickers.history.data[i][6]
         switch openValue {
         case let .double(double):
-            print(double)
             openPrice = double
         default:
             break
         }
+        guard openPrice != 0 else { continue }
 
         let priceChange = closePrice - openPrice
-        print(priceChange)
-        let ticker = Ticker(title: title, subTitle: subTitle, price: String(closePrice), priceChange: priceChange)
+        let ticker = Ticker(title: title, subTitle: subTitle, price: Money(amount: closePrice, currency: .rub), priceChange: Money(amount: priceChange, currency: .rub))
         tickers.append(ticker)
     }
     return tickers
