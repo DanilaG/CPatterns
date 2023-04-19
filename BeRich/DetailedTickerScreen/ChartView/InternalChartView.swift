@@ -13,21 +13,7 @@ struct InternalChartView: View {
     @Binding private var selectedElement: Stock?
     @State private var selectedTimePeriod: ChartTimePeriod
     @State private var selectedChartType: ChartType = .candleChart
-    var minPrice: Double {
-        if let lP = stocks.min(by: { $0.lowPrice < $1.lowPrice })?.lowPrice {
-            return lP
-        } else {
-            return 0
-        }
-    }
-
-    var maxPrice: Double {
-        if let mP = stocks.max(by: { $0.highPrice < $1.highPrice })?.highPrice {
-            return mP
-        } else {
-            return 1000
-        }
-    }
+    private var currencyFormater: Decimal.FormatStyle.Currency = Decimal.FormatStyle.Currency.currency(code: "RUB")
 
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
@@ -93,10 +79,10 @@ struct InternalChartView: View {
                                     }
                                     .chartYAxis {
                                         AxisMarks(position: .trailing, values: .automatic(desiredCount: 10)) {
-                                            AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+                                            AxisValueLabel(format: currencyFormater)
                                         }
                                     }
-                                    .chartYScale(domain: [minPrice, maxPrice])
+                                    .chartYScale(domain: [Stock.stockArrayMinPriceValue(stocks), Stock.stockArrayMaxPriceValue(stocks)])
                                     .chartXAxis {
                                         AxisMarks(values: .automatic(desiredCount: 10))
                                     }
@@ -153,10 +139,10 @@ struct InternalChartView: View {
                 }
                 .chartYAxis {
                     AxisMarks(position: .leading, values: .automatic(desiredCount: 10)) {
-                        AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+                        AxisValueLabel(format: currencyFormater)
                     }
                 }
-                .chartYScale(domain: [minPrice, maxPrice])
+                .chartYScale(domain: [Stock.stockArrayMinPriceValue(stocks), Stock.stockArrayMaxPriceValue(stocks)])
                 .frame(width: 25)
                 .background(.white)
 
