@@ -6,10 +6,4 @@ public enum DateFormatting {
         formatter.dateFormat = "dd/MM/yyyy"
         return formatter
     }()
-
-    public static let csvDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd"
-        return formatter
-    }()
 }

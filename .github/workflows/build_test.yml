@@ -23,7 +23,7 @@ jobs:
       - name: Formate
         run: swiftformat --lint --swiftversion 5.5 .
 
-  Build:
+  iOSTests:
     runs-on: macos-latest
     timeout-minutes: 30
     needs: Formate
@@ -46,11 +46,21 @@ jobs:
       - name: Generation
         run: xcodegen generate
 
-      - name: Build
+      - name: Tests
         run: |
-          xcodebuild clean build \
+          xcodebuild test \
           -project BeRich.xcodeproj \
-          -scheme BeRich \
-          -configuration Debug \
-          -sdk iphonesimulator \
+          -scheme BeRichTests \
+          -destination 'platform=iOS Simulator,name=iPhone 14 Plus' \
           CODE_SIGNING_REQUIRED=NO
+
+  MacOSTests:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    needs: Formate
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test
+        run: swift test
