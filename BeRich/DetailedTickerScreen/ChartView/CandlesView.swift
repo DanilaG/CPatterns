@@ -6,6 +6,21 @@ struct CandlesView: View {
     let patterns = Fakes.patterns
     @Binding var selectedTimePeriod: ChartTimePeriod
     @Binding var selectedChartType: ChartType
+    var minPrice: Double {
+        if let lP = stocks.min(by: { $0.lowPrice < $1.lowPrice })?.lowPrice {
+            return lP
+        } else {
+            return 0
+        }
+    }
+
+    var maxPrice: Double {
+        if let mP = stocks.max(by: { $0.highPrice < $1.highPrice })?.highPrice {
+            return mP
+        } else {
+            return 1000
+        }
+    }
 
     var body: some View {
         Chart {
@@ -32,7 +47,7 @@ struct CandlesView: View {
                         x: .value("Date", stock.date),
                         yStart: .value("Open", stock.openPrice),
                         yEnd: .value("Close", stock.closePrice),
-                        width: 6
+                        width: 5
                     )
                     .foregroundStyle(
                         stock.openPrice <= stock.closePrice ? Color.greenMain : Color.redMain
@@ -54,9 +69,9 @@ struct CandlesView: View {
                         LinearGradient(
                             gradient: Gradient(
                                 colors: [
+                                    Color(.orange).opacity(0.2),
                                     Color(.orange).opacity(0.1),
                                     Color(.orange).opacity(0.05),
-                                    Color(.orange).opacity(0.01),
                                     Color(.orange).opacity(0.0),
                                 ]
                             ),
@@ -68,10 +83,11 @@ struct CandlesView: View {
             }
         }
         .chartYAxis {
-            AxisMarks(position: .trailing, values: .automatic(desiredCount: 10))
+            AxisMarks(position: .trailing, values: .automatic(desiredCount: 10)) {
+                AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+            }
         }
-        // Вертикальный масштаб
-        .chartYScale(domain: 140 ... 170)
+        .chartYScale(domain: [minPrice, maxPrice])
         .chartXAxis {
             AxisMarks(values: .stride(by: selectedTimePeriod.unit, count: 1)) {
                 AxisValueLabel(format: selectedTimePeriod.format)

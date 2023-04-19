@@ -1,7 +1,7 @@
 import Charts
 import SwiftUI
 
-private let unitWidth: CGFloat = 35
+private let unitWidth: CGFloat = 100
 
 class ChartWidth: ObservableObject {
     @Published var chartWidth: CGFloat = .init(Fakes.defaultStocks.count) * unitWidth
@@ -13,6 +13,21 @@ struct InternalChartView: View {
     @Binding private var selectedElement: Stock?
     @State private var selectedTimePeriod: ChartTimePeriod
     @State private var selectedChartType: ChartType = .candleChart
+    var minPrice: Double {
+        if let lP = stocks.min(by: { $0.lowPrice < $1.lowPrice })?.lowPrice {
+            return lP
+        } else {
+            return 0
+        }
+    }
+
+    var maxPrice: Double {
+        if let mP = stocks.max(by: { $0.highPrice < $1.highPrice })?.highPrice {
+            return mP
+        } else {
+            return 1000
+        }
+    }
 
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
@@ -77,10 +92,11 @@ struct InternalChartView: View {
                                         }
                                     }
                                     .chartYAxis {
-                                        AxisMarks(position: .trailing, values: .automatic(desiredCount: 10))
+                                        AxisMarks(position: .trailing, values: .automatic(desiredCount: 10)) {
+                                            AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+                                        }
                                     }
-                                    // Вертикальный масштаб
-                                    .chartYScale(domain: 140 ... 170)
+                                    .chartYScale(domain: [minPrice, maxPrice])
                                     .chartXAxis {
                                         AxisMarks(values: .automatic(desiredCount: 10))
                                     }
@@ -136,10 +152,11 @@ struct InternalChartView: View {
                     )
                 }
                 .chartYAxis {
-                    AxisMarks(position: .leading, values: .automatic(desiredCount: 10))
+                    AxisMarks(position: .leading, values: .automatic(desiredCount: 10)) {
+                        AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+                    }
                 }
-                .chartYScale(domain: 140 ... 170)
-                // задаем фиксированную ширину контейнера с осью Y
+                .chartYScale(domain: [minPrice, maxPrice])
                 .frame(width: 25)
                 .background(.white)
 

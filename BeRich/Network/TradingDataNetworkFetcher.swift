@@ -174,7 +174,7 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
             break
         }
         var highPrice = 0.0
-        let highValue = moexCandles.candles.data[i][1]
+        let highValue = moexCandles.candles.data[i][2]
         switch highValue {
         case let .double(double):
             print(double)
@@ -183,7 +183,7 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
             break
         }
         var lowPrice = 0.0
-        let lowValue = moexCandles.candles.data[i][1]
+        let lowValue = moexCandles.candles.data[i][3]
         switch lowValue {
         case let .double(double):
             print(double)
