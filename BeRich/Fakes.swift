@@ -13,16 +13,16 @@ enum Fakes {
     static let tickers: [Ticker] = [
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
-               price: "100$",
-               priceChange: 100.2),
+               price: Money(amount: 100, currency: .usd),
+               priceChange: Money(amount: 102.1, currency: .usd)),
         Ticker(title: "GOOGLE",
                subTitle: "Google inc.",
-               price: "200$",
-               priceChange: 0.0),
+               price: Money(amount: 200, currency: .usd),
+               priceChange: Money(amount: 0.0, currency: .usd)),
         Ticker(title: "YAHOO",
                subTitle: "Yahoo inc.",
-               price: "300$",
-               priceChange: -130.89),
+               price: Money(amount: 300, currency: .usd),
+               priceChange: Money(amount: -138.92, currency: .usd)),
     ]
 
     static let defaultStocks: [Stock] = [
@@ -244,5 +244,21 @@ enum Fakes {
             }
         }
         return stocks
+    }
+
+    static func makeListScreenViewModel() -> ListScreenViewModel {
+        ListScreenViewModel(fetcher: TradingDataNetworkFetchingFakes())
+    }
+}
+
+private extension Fakes {
+    class TradingDataNetworkFetchingFakes: TradingDataNetworkFetching {
+        func getBinanceTickers() async -> BinanceTiсkers? {
+            nil
+        }
+
+        func getMoexTickers() async -> [Ticker]? {
+            Fakes.tickers
+        }
     }
 }

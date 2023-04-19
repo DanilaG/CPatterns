@@ -100,6 +100,6 @@ private let notFound = "Ничего не найдено"
 
 struct ListScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ListScreen(viewModel: ListScreenViewModel())
+        ListScreen(viewModel: Fakes.makeListScreenViewModel())
     }
 }

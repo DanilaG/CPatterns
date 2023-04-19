@@ -6,13 +6,13 @@ final class ListScreenViewModel: ObservableObject {
 
     private let input = PassthroughSubject<Event, Never>()
 
-    init() {
+    init(fetcher: TradingDataNetworkFetching) {
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.loading(),
+                Self.loading(fetcher: fetcher),
                 Self.userInput(input: input.eraseToAnyPublisher()),
             ]
         )
@@ -81,15 +81,19 @@ extension ListScreenViewModel {
         }
     }
 
-    static func loading() -> Feedback<State, Event> {
+    static func loading(fetcher: TradingDataNetworkFetching) -> Feedback<State, Event> {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case .loading = state else { return Empty().eraseToAnyPublisher() }
 
-            #warning("TODO: remove")
-            guard let result = [Event.didLoadTickers(Fakes.tickers), Event.failedLoadTickers].randomElement() else { return Empty().eraseToAnyPublisher() }
-            return Just(result)
-                .delay(for: 1, scheduler: RunLoop.main)
-                .eraseToAnyPublisher()
+            return Future { promise in
+                Task.detached {
+                    guard let tickers = await fetcher.getMoexTickers() else {
+                        return promise(.success(Event.failedLoadTickers))
+                    }
+                    promise(.success(Event.didLoadTickers(tickers)))
+                }
+            }
+            .eraseToAnyPublisher()
         }
     }
 
