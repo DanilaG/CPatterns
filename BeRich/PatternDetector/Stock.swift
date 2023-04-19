@@ -52,6 +52,6 @@ extension Stock {
     }
 
     static func stocksMaxPriceValue(_ stocks: [Stock]) -> Double {
-        stocks.min(by: { $0.lowPrice < $1.lowPrice })?.lowPrice ?? minPriceDefaultValue
+        stocks.max(by: { $0.highPrice < $1.highPrice })?.highPrice ?? maxPriceDefaultValue
     }
 }
