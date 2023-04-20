@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ChartView: View {
     var stocks: [Stock]
-    @State private var selectedElement: Stock? = nil
+    @State private var selectedElement: PatternViewData? = nil
     @State var timePeriod: ChartTimePeriod
     @State var patternViewData: [PatternViewData]
     @Binding var patternId: Int
@@ -11,7 +11,7 @@ struct ChartView: View {
 
     init(stocks: [Stock],
          patternViewData: [PatternViewData],
-         selectedElement: Stock? = nil,
+         selectedElement: PatternViewData? = nil,
          timePeriod: ChartTimePeriod,
          patternId: Binding<Int>,
          buttonTapToggle: Binding<Bool>)
@@ -36,7 +36,7 @@ struct ChartView: View {
                 ZStack(alignment: .topLeading) {
                     GeometryReader { nthGeoItem in
                         if let selectedElement {
-                            let dateInterval = Calendar.current.dateInterval(of: .minute, for: selectedElement.date) ?? DateInterval()
+                            let dateInterval = Calendar.current.dateInterval(of: .minute, for: selectedElement.detectedPattern.startDate) ?? DateInterval()
                             let startPositionX1 = proxy.position(forX: dateInterval.start) ?? 0
                             let startPositionX2 = proxy.position(forX: dateInterval.end) ?? 0
                             let midStartPositionX = (startPositionX1 + startPositionX2) / 2 + nthGeoItem[proxy.plotAreaFrame].origin.x
@@ -45,12 +45,6 @@ struct ChartView: View {
                             let lineHeight = nthGeoItem[proxy.plotAreaFrame].maxY
                             let boxWidth: CGFloat = 150
                             let boxOffset = max(0, min(nthGeoItem.size.width - boxWidth, lineX - boxWidth / 2))
-
-                            Rectangle()
-                                .fill(.quaternary)
-                                .frame(width: 2, height: lineHeight)
-                                .position(x: lineX, y: lineHeight / 2)
-
                             annotation(stock: selectedElement)
                                 .frame(width: boxWidth, alignment: .leading)
                                 .background {
@@ -58,31 +52,26 @@ struct ChartView: View {
                                         RoundedRectangle(cornerRadius: 8)
                                             .fill(.background)
                                         RoundedRectangle(cornerRadius: 8)
-                                            .fill(.quaternary.opacity(0.7))
+                                            .fill(.quaternary.opacity(0.8))
                                     }
                                     .padding([.leading, .trailing], -8)
                                     .padding([.top, .bottom], -4)
                                 }
-                                .offset(x: boxOffset, y: 10)
+                                .offset(x: boxOffset + boxWidth / 1.7, y: 10)
                         }
                     }
                 }
             }
     }
 
-    @ViewBuilder func annotation(stock: Stock) -> some View {
+    @ViewBuilder func annotation(stock: PatternViewData) -> some View {
         VStack(alignment: .leading) {
-            Text("\(stock.date, format: .dateTime.year().month().day())")
+            Text("\(stock.detectedPattern.startDate, format: .dateTime.year().month().day()) - \n \(stock.detectedPattern.endDate, format: .dateTime.year().month().day())")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Text("""
-            Open: \(stock.openPrice, format: .number)
-            Close: \(stock.closePrice, format: .number)
-            Low: \(stock.lowPrice, format: .number)
-            High: \(stock.highPrice, format: .number)
-            """)
-            .font(.caption.bold())
-            .foregroundColor(.primary)
+            Text(stock.detectedPattern.title)
+                .font(.caption.bold())
+                .foregroundColor(.primary)
         }
     }
 }
