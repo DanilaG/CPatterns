@@ -71,6 +71,9 @@ def up_body_gap (c1:Candlestick, c2:Candlestick):
 def down_body_gap (c1:Candlestick, c2:Candlestick):
     return c1.bm_body  > c2.tp_body
 
+def down_shadow_gap (c1:Candlestick, c2:Candlestick):
+    return c1.lp > c2.hp
+
 def ap(t:Timeseries, k):
     #средняя close по 5 свечам, начиная с k
     if t.len<k+5: return 0
@@ -179,7 +182,66 @@ def doji_dragonfly (t:Timeseries):
 # 1 significant
     return (t.len == 1) and t.candls[0].doji and t.candls[0].small_us and t.candls[0].long_ls
 
-pat1=   [{"funct": doji_dragonfly, "tot_len" : 1, "sig_len":1, "name":"Doji, Dragonfly"},
+#==================НОВЫЕ
+
+def hanging_man (t:Timeseries):
+# 9 candles = 8 trend + 1 significant
+    if t.len != 9: return False
+    return pt(t)==1 and t.candls[8].small_body and t.candls[8].no_us and t.candls[8].long_ls
+
+def doji_northern (t:Timeseries):
+# 9 candles = 8 trend + 1 significant
+    if t.len != 9: return False
+    return pt(t)==1 and t.candls[8].doji
+
+def doji_long_legged (t:Timeseries):
+# 1 significant
+    return (t.len == 1) and t.candls[0].doji and t.candls[0].long_us and t.candls[0].long_ls
+
+def matching_low (t:Timeseries):
+# 10 candles = 8 trend + 2 significant
+    if t.len != 10: return False
+    return pt(t)==-1 and t.candls[8].long_black_body and t.candls[9].black_body and ext_near(t.candls[8].cp, t.candls[9].cp)
+
+def hammer_inverted (t:Timeseries):
+# 10 candles = 8 trend + 2 significant
+    if t.len != 10: return False
+    return pt(t)==-1 and t.candls[8].long_black_body and t.candls[8].small_ls and t.candls[9].small_body and \
+        t.candls[9].long_us and t.candls[9].no_ls and down_body_gap(t.candls[8],t.candls[9])
+
+def kicking_bearish (t:Timeseries):
+# 2 significant
+    return (t.len == 2) and t.candls[0].no_us and t.candls[0].no_ls and t.candls[0].long_white_body and t.candls[1].no_us and \
+        t.candls[1].no_ls and t.candls[1].long_black_body and down_shadow_gap(t.candls[0],t.candls[1])
+
+def harami_cross_bullish (t:Timeseries):
+# 10 candles = 8 trend + 2 significant
+    if t.len != 10: return False
+    return pt(t)==-1 and t.candls[8].long_black_body and t.candls[9].doji and (t.candls[8].lp < t.candls[9].lp) and (t.candls[9].hp < t.candls[8].hp)
+
+def morning_doji_star (t:Timeseries):
+# 11 candles = 8 trend + 3 significant
+    if t.len != 11: return False
+    return pt(t)==-1 and t.candls[8].long_black_body and t.candls[9].doji and down_body_gap (t.candls[8],t.candls[9]) and \
+        t.candls[10].long_white_body and up_body_gap(t.candls[9],t.candls[10])
+
+def above_the_stomach (t:Timeseries):
+# 10 candles = 8 trend + 2 significant
+    if t.len != 10: return False
+    return pt(t)==-1 and t.candls[8].black_body and t.candls[9].white_body and\
+        (t.candls[9].op >= (0.5 * (t.candls[8].cp + t.candls[8].op))) and\
+        (t.candls[9].cp >= (0.5 * (t.candls[8].cp + t.candls[8].op)))
+
+def dark_cloud_cover (t:Timeseries):
+# 10 candles = 8 trend + 2 significant
+    if t.len != 10: return False
+    return pt(t)==1 and t.candls[8].long_white_body and t.candls[9].black_body and\
+        (t.candls[9].op > t.candls[8].hp) and (t.candls[9].cp >= (0.5 * (t.candls[8].cp + t.candls[8].op)))
+
+#"func" - название функции, "tot_len" - общая длина, включая trend и significant,
+#"sig_len" - длина significant, "name" - название по-человечески
+pat1=   [
+        {"funct": doji_dragonfly, "tot_len" : 1, "sig_len":1, "name":"Doji, Dragonfly"},
         {"funct":doji_gravestone, "tot_len":1, "sig_len":1, "name":"Doji, Gravestone"},
         {"funct":marubozu_opening_white, "tot_len":1, "sig_len":1, "name":"Marubozu, Opening White"},
         {"funct":marubozu_closing_black, "tot_len":1, "sig_len":1, "name":"Marubozu, Closing Black"},
@@ -194,7 +256,18 @@ pat1=   [{"funct": doji_dragonfly, "tot_len" : 1, "sig_len":1, "name":"Doji, Dra
         {"funct":kicking_bullish, "tot_len":2, "sig_len":2, "name":"Kicking Bullish"},
         {"funct":belt_hold_bullish, "tot_len":9, "sig_len":1, "name":"Belt Hold, Bearish"},
         {"funct":shooting_star_one_candle, "tot_len":9, "sig_len":1, "name":"Shooting Star, One-Candle"},
-        {"funct":belt_hold_bearish, "tot_len":9, "sig_len":1, "name":"Belt Hold, Bearish"}]
+        {"funct":belt_hold_bearish, "tot_len":9, "sig_len":1, "name":"Belt Hold, Bearish"},
+        {"funct":hanging_man, "tot_len":9, "sig_len":1, "name":"Hanging Man"},
+        {"funct":doji_northern, "tot_len":9, "sig_len":1, "name":"Doji, Northern"},
+        {"funct":doji_long_legged, "tot_len":1, "sig_len":1, "name":"Doji, Long Legged"},
+        {"funct":matching_low, "tot_len":10, "sig_len":2, "name":"Matching Low"},
+        {"funct":hammer_inverted, "tot_len":10, "sig_len":2, "name":"Hammer, Inverted"},
+        {"funct":kicking_bearish, "tot_len":2, "sig_len":2, "name":"Kicking Bearish"},
+        {"funct":harami_cross_bullish, "tot_len":10, "sig_len":2, "name":"Harami Cross, Bullish"},
+        {"funct":morning_doji_star, "tot_len":11, "sig_len":3, "name":"Morning Doji Star"},
+        {"funct":above_the_stomach, "tot_len":10, "sig_len":2, "name":"Above the Stomach"},
+        {"funct":dark_cloud_cover, "tot_len":10, "sig_len":2, "name":"Dark Cloud Cover"},
+        ]
 
 
 c=Candlestick(a)
