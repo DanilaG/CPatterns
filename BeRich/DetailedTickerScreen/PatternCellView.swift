@@ -8,13 +8,18 @@ struct PatternCellView: View {
     var body: some View {
         Group {
             HStack {
-                Text(patternViewData.detectedPattern.title)
-                    .font(.title2)
-                    .foregroundColor(.black)
+                VStack(alignment: .leading) {
+                    Text(patternViewData.detectedPattern.title)
+                        .font(.title2)
+                        .foregroundColor(.black)
+                    Text(DateFormatting.patternCellDate.string(from: patternViewData.detectedPattern.startDate))
+                        .font(Font.subheadline)
+                        .foregroundColor(.gray500)
+                }
                 Spacer()
                 Rectangle()
                     .foregroundColor(patternViewData.color)
-                    .padding([.trailing, .top, .bottom], -20)
+                    .padding([.trailing, .top, .bottom], -30)
                     .frame(width: 52)
             }
             .padding(.horizontal, 16)
@@ -33,5 +38,6 @@ struct PatternCellView: View {
                 radius: 8,
                 y: 4)
         .frame(height: 42)
+        .padding(.vertical, 8)
     }
 }
