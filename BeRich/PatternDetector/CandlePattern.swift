@@ -10,29 +10,80 @@ enum CandlePattern: CaseIterable {
     case ladderBottom
     case takuriLine
     case kickingBullish
+    case belt_hold_bullish
+    case marubozu_closing_black
+    case marubozu_opening_white
+    case shooting_star_one_candle
+    case doji_gravestone
+    case belt_hold_bearish
+    case doji_dragonfly
+    case hanging_man
+    case doji_northern
+    case doji_long_legged
+    case matching_low
+    case hammer_inverted
+    case kicking_bearish
+    case harami_cross_bullish
+    case morning_doji_star
+    case above_the_stomach
+    case dark_cloud_cover
 }
 
 extension CandlePattern {
     var title: String {
         switch self {
         case .marubozuBlack:
-            return "Марибозу черный"
+            return "Marubozu Black"
         case .marubozuWhite:
-            return "Марибозу белый"
+            return "Marubozu White"
         case .hammer:
-            return "Молоток"
+            return "Hammer"
         case .piercingPattern:
-            return "Пирсинг"
+            return "Piercing Pattern"
         case .twoCrowns:
-            return "Две короны"
+            return "Two Crowns"
         case .concealingBabySwallow:
-            return "Прячущаяся ласточка"
+            return "Concealing Baby Swallow"
         case .ladderBottom:
-            return "Дно лестницы"
+            return "Ladder Bottom"
         case .takuriLine:
-            return "Линия Такури"
+            return "Takuri Line"
         case .kickingBullish:
-            return "Брыкающийся бычий настрой"
+            return "Kicking Bullish"
+        case .belt_hold_bullish:
+            return "Belt Hold Bullish"
+        case .marubozu_closing_black:
+            return "Marubozu Closing Black"
+        case .marubozu_opening_white:
+            return "Marubozu Opening White"
+        case .shooting_star_one_candle:
+            return "Shooting Star One Candle"
+        case .doji_gravestone:
+            return "Doji Gravestone"
+        case .belt_hold_bearish:
+            return "Belt Hold Bearish"
+        case .doji_dragonfly:
+            return "Doji Dragonfly"
+        case .hanging_man:
+            return "Hanging Man"
+        case .doji_northern:
+            return "Doji Northern"
+        case .doji_long_legged:
+            return "Doji Long Legged"
+        case .matching_low:
+            return "Matching Low"
+        case .hammer_inverted:
+            return "Hammer Inverted"
+        case .kicking_bearish:
+            return "Kicking Bearish"
+        case .harami_cross_bullish:
+            return "Harami Cross Bullish"
+        case .morning_doji_star:
+            return "Morning Doji Star"
+        case .above_the_stomach:
+            return "Above The Stomach"
+        case .dark_cloud_cover:
+            return "Above The Stomach"
         }
     }
 
@@ -43,26 +94,53 @@ extension CandlePattern {
         case .marubozuWhite:
             return 1
         case .hammer:
-            // 9 свечей - 8 тренд + 1 значимая
             return 9
         case .piercingPattern:
-            // 10 свечей - 8 тренд + 2 значимых
             return 10
         case .twoCrowns:
-            // 11 свечей - 8 тренд + 3 значимых
             return 11
         case .concealingBabySwallow:
-            // 12 свечей - 8 тренд + 4 значимых
             return 12
         case .ladderBottom:
-            // 13 свечей - 8 тренд + 5 значимых
             return 13
         case .takuriLine:
-            // 6 candles = 5 trend + 1 significant
-            return 6
+            return 9
         case .kickingBullish:
-            // 2 candles = 2 significant, trend is not important
             return 2
+        case .belt_hold_bullish:
+            return 9
+        case .marubozu_closing_black:
+            return 1
+        case .marubozu_opening_white:
+            return 1
+        case .shooting_star_one_candle:
+            return 9
+        case .doji_gravestone:
+            return 1
+        case .belt_hold_bearish:
+            return 9
+        case .doji_dragonfly:
+            return 1
+        case .hanging_man:
+            return 9
+        case .doji_northern:
+            return 9
+        case .doji_long_legged:
+            return 1
+        case .matching_low:
+            return 10
+        case .hammer_inverted:
+            return 10
+        case .kicking_bearish:
+            return 2
+        case .harami_cross_bullish:
+            return 10
+        case .morning_doji_star:
+            return 11
+        case .above_the_stomach:
+            return 10
+        case .dark_cloud_cover:
+            return 10
         }
     }
 
@@ -73,25 +151,52 @@ extension CandlePattern {
         case .marubozuWhite:
             return 1
         case .hammer:
-            // 9 свечей - 8 тренд + 1 значимая
             return 1
         case .piercingPattern:
-            // 10 свечей - 8 тренд + 2 значимых
             return 2
         case .twoCrowns:
-            // 11 свечей - 8 тренд + 3 значимых
             return 3
         case .concealingBabySwallow:
-            // 12 свечей - 8 тренд + 4 значимых
             return 4
         case .ladderBottom:
-            // 13 свечей - 8 тренд + 5 значимых
             return 5
         case .takuriLine:
-            // 6 candles = 5 trend + 1 significant
             return 1
         case .kickingBullish:
-            // 2 candles = 2 significant, trend is not important
+            return 2
+        case .belt_hold_bullish:
+            return 1
+        case .marubozu_closing_black:
+            return 1
+        case .marubozu_opening_white:
+            return 1
+        case .shooting_star_one_candle:
+            return 1
+        case .doji_gravestone:
+            return 1
+        case .belt_hold_bearish:
+            return 1
+        case .doji_dragonfly:
+            return 1
+        case .hanging_man:
+            return 1
+        case .doji_northern:
+            return 1
+        case .doji_long_legged:
+            return 1
+        case .matching_low:
+            return 2
+        case .hammer_inverted:
+            return 2
+        case .kicking_bearish:
+            return 2
+        case .harami_cross_bullish:
+            return 2
+        case .morning_doji_star:
+            return 3
+        case .above_the_stomach:
+            return 2
+        case .dark_cloud_cover:
             return 2
         }
     }
@@ -177,9 +282,9 @@ extension CandlePattern {
         case .takuriLine:
             return { t in
                 CandlePattern.pt(t) == -1 &&
-                    t.candlesticks[5].small_body &&
-                    t.candlesticks[5].no_us &&
-                    (t.candlesticks[5].ls > 3 * t.candlesticks[5].hb)
+                t.candlesticks[8].small_body &&
+                t.candlesticks[8].no_us &&
+                ( t.candlesticks[8].ls > 3*t.candlesticks[8].hb)
             }
         case .kickingBullish:
             return { t in
@@ -190,6 +295,130 @@ extension CandlePattern {
                     t.candlesticks[1].long_white_body &&
                     t.candlesticks[1].no_us &&
                     t.candlesticks[1].no_ls
+            }
+        case .belt_hold_bullish:
+            return { t in
+                CandlePattern.pt(t) == -1 &&
+                    t.candlesticks[8].long_white_body &&
+                    t.candlesticks[8].no_ls &&
+                    mod_near(t.candlesticks[8].closePrice, t.candlesticks[8].highPrice)
+            }
+        case .marubozu_closing_black:
+            return { t in
+                (!t.candlesticks[0].no_us) &&
+                    t.candlesticks[0].long_black_body &&
+                    t.candlesticks[0].no_ls
+            }
+        case .marubozu_opening_white:
+            return { t in
+                !t.candlesticks[0].no_us &&
+                    t.candlesticks[0].long_white_body &&
+                    t.candlesticks[0].no_ls
+            }
+        case .shooting_star_one_candle:
+            return { t in
+                CandlePattern.pt(t) == 1 &&
+                    t.candlesticks[8].long_us &&
+                    t.candlesticks[8].no_ls &&
+                    t.candlesticks[8].small_body &&
+                    t.candlesticks[8].us > 2 * t.candlesticks[8].hb
+            }
+        case .doji_gravestone:
+            return { t in
+                t.candlesticks[0].doji &&
+                    t.candlesticks[0].no_ls &&
+                    t.candlesticks[0].long_us
+            }
+        case .belt_hold_bearish:
+            return { t in
+                CandlePattern.pt(t) == 1 &&
+                    t.candlesticks[8].long_black_body &&
+                    t.candlesticks[8].no_us &&
+                    t.candlesticks[8].small_ls
+            }
+        case .doji_dragonfly:
+            return { t in
+                t.candlesticks[0].doji &&
+                    t.candlesticks[0].small_us &&
+                    t.candlesticks[0].long_ls
+            }
+        case .hanging_man:
+            return { t in
+                CandlePattern.pt(t) == 1 &&
+                    t.candlesticks[8].small_body &&
+                    t.candlesticks[8].no_us &&
+                    t.candlesticks[8].long_ls
+            }
+        case .doji_northern:
+            return { t in
+                CandlePattern.pt(t) == 1 &&
+                    t.candlesticks[8].doji
+            }
+        case .doji_long_legged:
+            return { t in
+                t.candlesticks[0].doji &&
+                    t.candlesticks[0].long_us &&
+                    t.candlesticks[0].long_ls
+            }
+        case .matching_low:
+            return { t in
+                CandlePattern.pt(t) == -1 &&
+                    t.candlesticks[8].long_black_body &&
+                    t.candlesticks[9].black_body &&
+                    ext_near(t.candlesticks[8].closePrice, t.candlesticks[9].closePrice)
+            }
+        case .hammer_inverted:
+            return { t in
+                CandlePattern.pt(t) == -1 &&
+                    t.candlesticks[8].long_black_body &&
+                    t.candlesticks[8].small_ls &&
+                    t.candlesticks[9].small_body &&
+                    t.candlesticks[9].long_us &&
+                    t.candlesticks[9].no_ls &&
+                    down_body_gap(t.candlesticks[8], t.candlesticks[9])
+            }
+        case .kicking_bearish:
+            return { t in
+                t.candlesticks[0].no_us &&
+                    t.candlesticks[0].no_ls &&
+                    t.candlesticks[0].long_white_body &&
+                    t.candlesticks[1].no_us &&
+                    t.candlesticks[1].no_ls &&
+                    t.candlesticks[1].long_black_body &&
+                    down_shadow_gap(t.candlesticks[0], t.candlesticks[1])
+            }
+        case .harami_cross_bullish:
+            return { t in
+                CandlePattern.pt(t) == -1 &&
+                    t.candlesticks[8].long_black_body &&
+                    t.candlesticks[9].doji &&
+                    (t.candlesticks[8].lowPrice < t.candlesticks[9].lowPrice) &&
+                    (t.candlesticks[9].highPrice < t.candlesticks[8].highPrice)
+            }
+        case .morning_doji_star:
+            return { t in
+                CandlePattern.pt(t) == -1 &&
+                    t.candlesticks[8].long_black_body &&
+                    t.candlesticks[9].doji &&
+                    down_body_gap(t.candlesticks[8], t.candlesticks[9]) &&
+                    t.candlesticks[10].long_white_body &&
+                    up_body_gap(t.candlesticks[9], t.candlesticks[10])
+            }
+        case .above_the_stomach:
+            return { t in
+                CandlePattern.pt(t) == -1 &&
+                    t.candlesticks[8].black_body &&
+                    t.candlesticks[9].white_body &&
+                    (t.candlesticks[9].openPrice >= (0.5 * (t.candlesticks[8].closePrice + t.candlesticks[8].openPrice))) &&
+                    (t.candlesticks[9].closePrice >= (0.5 * (t.candlesticks[8].closePrice + t.candlesticks[8].openPrice)))
+            }
+        case .dark_cloud_cover:
+            return { t in
+                CandlePattern.pt(t) == 1 &&
+                    t.candlesticks[8].long_white_body &&
+                    t.candlesticks[9].black_body &&
+                    (t.candlesticks[9].openPrice > t.candlesticks[8].highPrice) &&
+                    (t.candlesticks[9].closePrice >= (0.5 * (t.candlesticks[8].closePrice + t.candlesticks[8].openPrice)))
             }
         }
     }
@@ -231,4 +460,17 @@ private func up_body_gap(_ c1: PatternDetectorCandle, _ c2: PatternDetectorCandl
 
 private func down_body_gap(_ c1: PatternDetectorCandle, _ c2: PatternDetectorCandle) -> Bool {
     c1.bm_body > c2.tp_body
+}
+
+private func mod_near(_ x: Double, _ y: Double) -> Bool {
+    let z = abs(x - y) / max(x, y)
+    return z >= 0.003 && z < 0.01
+}
+
+private func ext_near(_ x: Double, _ y: Double) -> Bool {
+    abs(x - y) / max(x, y) <= 0.003
+}
+
+private func down_shadow_gap(_ c1: PatternDetectorCandle, _ c2: PatternDetectorCandle) -> Bool {
+    c1.lowPrice > c2.highPrice
 }

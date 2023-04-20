@@ -19,10 +19,13 @@ struct PatternDetectorCandle {
     let small_body: Bool
     let small_us: Bool
     let long_us: Bool
+    let long_ls: Bool
+    let small_ls: Bool
     let long_black_body: Bool
     let long_white_body: Bool
     let no_ls: Bool
     let no_us: Bool
+    let doji: Bool
 
     init(openPrice: Double,
          highPrice: Double,
@@ -46,11 +49,14 @@ struct PatternDetectorCandle {
         long_body = lar_less(x: bm_body, y: tp_body)
         small_body = sli_less(x: bm_body, y: tp_body)
         small_us = sli_greater(x: highPrice, y: tp_body)
+        small_ls = sli_less(x: lowPrice, y: bm_body)
         long_us = lar_greater(x: highPrice, y: tp_body)
+        long_ls = lar_less(x: lowPrice, y: bm_body)
         long_black_body = long_body && black_body
         long_white_body = long_body && white_body
         no_ls = ext_near(x: lowPrice, y: bm_body)
         no_us = ext_near(x: highPrice, y: tp_body)
+        doji = ext_near(x: openPrice, y: closePrice)
     }
 
     init(candle: Stock) {
