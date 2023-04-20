@@ -104,7 +104,7 @@ private let defaultErrorMessage = "Ошибка загрузки"
 
 private func toViewData(_ patterns: [DetectedPattern]) -> [PatternViewData] {
     let patternColors: [Color] = [.patternDarkGreen, .patternPink, .patternBlue, .patternDarkPink, .patternBrown, .patternDarkBlue]
-    return patterns.enumerated().map {
+    return patterns.sorted(by: { $0.startDate > $1.startDate }).enumerated().map {
         PatternViewData(
             detectedPattern: $0.element,
             color: patternColors[$0.offset % patternColors.count]
