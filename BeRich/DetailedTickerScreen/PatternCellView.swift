@@ -38,6 +38,7 @@ struct PatternCellView: View {
                 radius: 8,
                 y: 4)
         .frame(height: 42)
-        .padding(.vertical, 8)
+        .padding(.bottom, 16)
+        .padding(.horizontal, 12)
     }
 }
