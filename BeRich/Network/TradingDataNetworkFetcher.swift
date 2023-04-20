@@ -223,10 +223,6 @@ extension ChartTimePeriod {
     var queryItem: URLQueryItem {
         let value: String
         switch self {
-        case .tenMin:
-            value = "10"
-        case .hour:
-            value = "60"
         case .day:
             value = "24"
         case .week:

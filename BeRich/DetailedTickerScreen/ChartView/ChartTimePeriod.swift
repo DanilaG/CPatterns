@@ -1,8 +1,6 @@
 import Foundation
 
 enum ChartTimePeriod: Int {
-    case tenMin
-    case hour
     case day
     case week
     case month
@@ -19,10 +17,6 @@ extension ChartTimePeriod: CaseIterable {}
 extension ChartTimePeriod {
     var title: String {
         switch self {
-        case .tenMin:
-            return "10 МИН"
-        case .hour:
-            return "Ч"
         case .day:
             return "Д"
         case .week:
@@ -34,10 +28,6 @@ extension ChartTimePeriod {
 
     var unit: Calendar.Component {
         switch self {
-        case .tenMin:
-            return .hour
-        case .hour:
-            return .day
         case .day, .week:
             return .month
         case .month:
@@ -47,10 +37,6 @@ extension ChartTimePeriod {
 
     var format: Date.FormatStyle {
         switch self {
-        case .tenMin:
-            return .dateTime.hour()
-        case .hour:
-            return .dateTime.day()
         case .day:
             return .dateTime.month()
         case .week:
