@@ -1,15 +1,6 @@
 import Foundation
 
 enum Fakes {
-    // TODO: change date format
-//    static let patterns: [Pattern] = [
-//        Pattern(title: "Кольцо дракона", lowPrice: 160, highPrice: 168, startTimePeriod: "31/03/2023", endTimePeriod: "06/04/2023"),
-//        Pattern(title: "Адская колесница", lowPrice: 155, highPrice: 165, startTimePeriod: "08/04/2023", endTimePeriod: "10/04/2023"),
-//        Pattern(title: "Черная карта", lowPrice: 146, highPrice: 160, startTimePeriod: "14/04/2023", endTimePeriod: "16/04/2023"),
-//        Pattern(title: "Паттерн 2", lowPrice: 152, highPrice: 165, startTimePeriod: "19/04/2023", endTimePeriod: "25/04/2023"),
-//        Pattern(title: "Паттерн 3", lowPrice: 155, highPrice: 165, startTimePeriod: "22/03/2023", endTimePeriod: "25/03/2023"),
-//    ]
-
     static let tickers: [Ticker] = [
         Ticker(title: "APPLE",
                subTitle: "Apple inc.",
