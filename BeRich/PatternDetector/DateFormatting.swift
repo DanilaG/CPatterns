@@ -12,4 +12,10 @@ public enum DateFormatting {
         formatter.dateFormat = "MM/dd/yyyy HH:mm:ss"
         return formatter
     }()
+
+    public static let patternCellDate: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        return formatter
+    }()
 }
