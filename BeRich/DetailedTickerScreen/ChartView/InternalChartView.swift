@@ -186,13 +186,6 @@ struct InternalChartView: View {
                 }
             }
             .frame(height: 400)
-            Button {
-                scrollTo.toggle()
-                candleScrollTo = stocks.count - 1
-            } label: {
-                Text("Scroll to end")
-                    .foregroundColor(Color.black)
-            }
         }
     }
 
