@@ -16,7 +16,7 @@ struct InternalChartView: View {
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
     @State var patternViewData: [PatternViewData]
-    @Binding var selectedElement: Stock?
+    @Binding var selectedElement: PatternViewData?
     @State var selectedTimePeriod: ChartTimePeriod
 
     // Ширина чарта, высчитывается в зависимости от количества элементов дата сорса
@@ -34,7 +34,7 @@ struct InternalChartView: View {
     init(stocks: [Stock],
          patternViewData: [PatternViewData],
          selectedTimePeriod: ChartTimePeriod,
-         selectedElement: Binding<Stock?>,
+         selectedElement: Binding<PatternViewData?>,
          patterns _: [PatternViewData],
          candleScrollTo: Binding<Int>,
          buttonTapToggle: Binding<Bool>)
@@ -70,8 +70,8 @@ struct InternalChartView: View {
                                                             let element = findElement(location: $0.location,
                                                                                       proxy: proxy,
                                                                                       geometry: nthGeometryItem,
-                                                                                      data: stocks)
-                                                            if selectedElement?.date == element?.date {
+                                                                                      data: patternViewData)
+                                                            if selectedElement?.detectedPattern.startDate == element?.detectedPattern.startDate {
                                                                 // If tapping the same element, clear the selection.
                                                                 selectedElement = nil
                                                             } else {
@@ -84,7 +84,7 @@ struct InternalChartView: View {
                                                                     selectedElement = findElement(location: $0.location,
                                                                                                   proxy: proxy,
                                                                                                   geometry: nthGeometryItem,
-                                                                                                  data: stocks)
+                                                                                                  data: patternViewData)
                                                                 }
                                                         )
                                                 )
@@ -99,35 +99,6 @@ struct InternalChartView: View {
                                     .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
                                     .chartXAxis {
                                         AxisMarks(values: .automatic(desiredCount: 10))
-                                    }
-                                    .chartOverlay { proxy in
-                                        GeometryReader { nthGeometryItem in
-                                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                                .gesture(
-                                                    SpatialTapGesture()
-                                                        .onEnded {
-                                                            let element = findElement(location: $0.location,
-                                                                                      proxy: proxy,
-                                                                                      geometry: nthGeometryItem,
-                                                                                      data: stocks)
-                                                            if selectedElement?.date == element?.date {
-                                                                // If tapping the same element, clear the selection.
-                                                                selectedElement = nil
-                                                            } else {
-                                                                selectedElement = element
-                                                            }
-                                                        }
-                                                        .exclusively(
-                                                            before: DragGesture()
-                                                                .onChanged {
-                                                                    selectedElement = findElement(location: $0.location,
-                                                                                                  proxy: proxy,
-                                                                                                  geometry: nthGeometryItem,
-                                                                                                  data: stocks)
-                                                                }
-                                                        )
-                                                )
-                                        }
                                     }
                                     .frame(width: chartWidth.chartWidth)
                             }
@@ -203,15 +174,15 @@ struct InternalChartView: View {
         }
     }
 
-    private func findElement(location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy, data: [Stock]) -> Stock? {
+    private func findElement(location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy, data: [PatternViewData]) -> PatternViewData? {
         let data = data
         let relativeXPosition = location.x - geometry[proxy.plotAreaFrame].origin.x
         if let date = proxy.value(atX: relativeXPosition) as Date? {
             // Find the closest date element.
-            var minDistance: TimeInterval = .infinity
+            var minDistance: TimeInterval = 100 * 3600
             var foundIndex: Int?
             for index in data.indices {
-                let nthDistance = data[index].date.distance(to: date)
+                let nthDistance = data[index].detectedPattern.startDate.distance(to: date)
                 if abs(nthDistance) < minDistance {
                     minDistance = abs(nthDistance)
                     foundIndex = index
