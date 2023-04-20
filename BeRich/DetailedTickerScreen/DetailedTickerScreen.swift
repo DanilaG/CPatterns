@@ -72,7 +72,10 @@ struct DetailedTickerScreen: View {
                     }
             }
         }
+        .padding(.top, -12)
+        .padding(.horizontal, -20)
         .listStyle(.plain)
+        .background(.red)
     }
 
     @ViewBuilder func changeTimePeriodButtons(_ parameters: DetailedTickerScreenViewModel.ChartParameters) -> some View {

@@ -165,12 +165,6 @@ struct InternalChartView: View {
                 }
             }
             .frame(height: 400)
-            Button {
-                buttonTapToggle.toggle()
-            } label: {
-                Text("Scroll to end")
-                    .foregroundColor(Color.black)
-            }
         }
     }
 

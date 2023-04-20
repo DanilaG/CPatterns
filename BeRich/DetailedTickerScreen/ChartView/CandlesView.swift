@@ -51,7 +51,7 @@ struct CandlesView: View {
                     AreaMark(
                         x: .value("Date", stock.date),
                         yStart: .value("Price", stock.closePrice),
-                        yEnd: .value("PriceEnd", 120)
+                        yEnd: .value("PriceEnd", 0)
                     )
                     .interpolationMethod(.catmullRom)
                     .foregroundStyle(
