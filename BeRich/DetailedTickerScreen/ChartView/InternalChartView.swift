@@ -9,15 +9,15 @@ class ChartWidth: ObservableObject {
 
 struct InternalChartView: View {
     @Environment(\.refresh) private var refresh
-    private var stocks: [Stock]
-    private var detectedPatterns: [DetectedPattern]
-    @Binding private var selectedElement: Stock?
-    @State private var selectedTimePeriod: ChartTimePeriod
+    var stocks: [Stock]
     @State private var selectedChartType: ChartType = .candleChart
     var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
 
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
+    @State var patternViewData: [PatternViewData]
+    @Binding var selectedElement: Stock?
+    @State var selectedTimePeriod: ChartTimePeriod
 
     // Ширина чарта, высчитывается в зависимости от количества элементов дата сорса
     // 16 - ширина свечи + расстояние до другой свечи
@@ -26,18 +26,26 @@ struct InternalChartView: View {
     // Свойство, хранещее id свечи,
     // к которой нам нужно проскроллиться по нажатию на кнопку
     // Далее это будет либо id паттерна, либо закостылено id свечи в нужном паттерне
-    @State private var candleScrollTo: Int
+    @Binding var candleScrollTo: Int
+
+    // Свойство благодаря которому работает скролл
+    @Binding var buttonTapToggle: Bool
 
     init(stocks: [Stock],
-         detectedPatterns: [DetectedPattern],
+         patternViewData: [PatternViewData],
          selectedTimePeriod: ChartTimePeriod,
-         selectedElement: Binding<Stock?>)
+         selectedElement: Binding<Stock?>,
+         patterns _: [PatternViewData],
+         candleScrollTo: Binding<Int>,
+         buttonTapToggle: Binding<Bool>)
     {
         self.stocks = stocks
-        self.detectedPatterns = detectedPatterns
+//        self.patternViewData = patternViewData
         _selectedTimePeriod = State(initialValue: selectedTimePeriod)
-        _candleScrollTo = State(initialValue: stocks.count - 1)
+        _candleScrollTo = Binding(projectedValue: candleScrollTo)
         _selectedElement = Binding(projectedValue: selectedElement)
+        _patternViewData = State(initialValue: patternViewData)
+        _buttonTapToggle = Binding(projectedValue: buttonTapToggle)
     }
 
     var body: some View {
@@ -50,9 +58,9 @@ struct InternalChartView: View {
                                 ChartUnderlayForScroll(stocksCount: stocks.count,
                                                        chartWidth: chartWidth)
                                 CandlesView(stocks: stocks,
-                                            patterns: detectedPatterns,
                                             selectedTimePeriod: $selectedTimePeriod,
-                                            selectedChartType: $selectedChartType)
+                                            selectedChartType: $selectedChartType,
+                                            patterns: patternViewData)
                                     .chartOverlay { proxy in
                                         GeometryReader { nthGeometryItem in
                                             Rectangle().fill(.clear).contentShape(Rectangle())
@@ -124,33 +132,33 @@ struct InternalChartView: View {
                                     .frame(width: chartWidth.chartWidth)
                             }
                         }
+                        Chart {
+                            RectangleMark(
+                                x: .value("Date", Date()),
+                                yStart: .value("Open", 0),
+                                yEnd: .value("Close", 0),
+                                width: 0
+                            )
+                        }
+                        .chartYAxis {
+                            AxisMarks(position: .leading, values: .automatic(desiredCount: 10)) {
+                                AxisValueLabel(format: currencyFormater)
+                            }
+                        }
+                        .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
+                        .frame(width: 40)
+                        .background(.white)
                     }
                     .onAppear {
                         scrollPosition.scrollTo(candleScrollTo)
                     }
-                    .onChange(of: scrollTo) { _ in
+                    .onChange(of: buttonTapToggle) { _ in
                         withAnimation {
-                            scrollPosition.scrollTo(candleScrollTo)
+                            scrollPosition.scrollTo(candleScrollTo, anchor: .center)
+                            print(candleScrollTo)
                         }
                     }
                 }
-
-                Chart {
-                    RectangleMark(
-                        x: .value("Date", Fakes.defaultStocks[0].date, unit: .day),
-                        yStart: .value("Open", Fakes.defaultStocks[0].openPrice),
-                        yEnd: .value("Close", Fakes.defaultStocks[0].closePrice),
-                        width: 0
-                    )
-                }
-                .chartYAxis {
-                    AxisMarks(position: .leading, values: .automatic(desiredCount: 10)) {
-                        AxisValueLabel(format: currencyFormater)
-                    }
-                }
-                .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
-                .frame(width: 25)
-                .background(.white)
 
                 VStack {
                     HStack {
@@ -171,7 +179,7 @@ struct InternalChartView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            scrollTo.toggle()
+                            buttonTapToggle.toggle()
                             candleScrollTo = stocks.count - 1
                         }, label: {
                             Image(systemName: "chevron.right")
@@ -180,12 +188,18 @@ struct InternalChartView: View {
                         })
                         .buttonStyle(.bordered)
                         .background((Color.blueMain).cornerRadius(10))
-                        .padding(.trailing, 35)
+                        .padding(.trailing, 50)
                         .padding(.bottom, 25)
                     }
                 }
             }
             .frame(height: 400)
+            Button {
+                buttonTapToggle.toggle()
+            } label: {
+                Text("Scroll to end")
+                    .foregroundColor(Color.black)
+            }
         }
     }
 

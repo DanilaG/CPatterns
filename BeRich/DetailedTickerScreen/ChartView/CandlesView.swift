@@ -3,23 +3,22 @@ import SwiftUI
 
 struct CandlesView: View {
     let stocks: [Stock]
-    let patterns: [DetectedPattern]
     @Binding var selectedTimePeriod: ChartTimePeriod
     @Binding var selectedChartType: ChartType
     var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
-
+    @State var patterns: [PatternViewData]
     var body: some View {
         Chart {
-            ForEach(patterns) { pattern in // Область паттерна
-                RectangleMark(xStart: .value("Date", pattern.startDate),
-                              xEnd: .value("Date", pattern.endDate),
-                              // TODO: Fix height
-                              yStart: .value("Low", 0),
-                              // yStart: .value("Low", pattern.lowPrice),
-                              yEnd: .value("High", 400)
-                              // yStart: .value("Low", pattern.lowPrice),
+            ForEach(patterns, id: \.detectedPattern.id) { // Область паттерна
+                RectangleMark(
+                    xStart: .value("Date", $0.detectedPattern.startDate - selectedTimePeriod.timePeriodForPatternView,
+                                   unit: selectedTimePeriod.unitForPatternView),
+                    xEnd: .value("Date", $0.detectedPattern.endDate + selectedTimePeriod.timePeriodForPatternView,
+                                 unit: selectedTimePeriod.unitForPatternView),
+                    yStart: .value("Low", 0),
+                    yEnd: .value("High", 100_000)
                 )
-                .foregroundStyle(Color.patternBlue)
+                .foregroundStyle($0.color.opacity(0.4))
             }
             ForEach(stocks) { stock in
                 switch selectedChartType {
@@ -72,12 +71,7 @@ struct CandlesView: View {
                 }
             }
         }
-        .chartYAxis {
-            AxisMarks(position: .trailing, values: .automatic(desiredCount: 10)) {
-                AxisValueLabel(format: currencyFormater)
-            }
-        }
-        .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
+        .chartYAxis(.hidden)
         .chartXAxis {
             AxisMarks(values: .stride(by: selectedTimePeriod.unit, count: 1)) {
                 AxisValueLabel(format: selectedTimePeriod.format)

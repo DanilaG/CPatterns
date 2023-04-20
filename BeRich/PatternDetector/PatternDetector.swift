@@ -4,6 +4,8 @@ struct PatternDetector {
     func detectPatterns(candles: [Stock]) -> [DetectedPattern] {
         let candlesticks = candles.map {
             PatternDetectorCandle(candle: $0)
+        }.sorted {
+            $0.date < $1.date
         }
 
         var detectedPatterns: [DetectedPattern] = []
