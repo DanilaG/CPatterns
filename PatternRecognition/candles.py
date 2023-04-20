@@ -179,6 +179,22 @@ def doji_dragonfly (t:Timeseries):
 # 1 significant
     return (t.len == 1) and t.candls[0].doji and t.candls[0].small_us and t.candls[0].long_ls
 
+pat1=   [{"funct": doji_dragonfly, "tot_len" : 1, "sig_len":1, "name":"Doji, Dragonfly"},
+        {"funct":doji_gravestone, "tot_len":1, "sig_len":1, "name":"Doji, Gravestone"},
+        {"funct":marubozu_opening_white, "tot_len":1, "sig_len":1, "name":"Marubozu, Opening White"},
+        {"funct":marubozu_closing_black, "tot_len":1, "sig_len":1, "name":"Marubozu, Closing Black"},
+        {"funct":marubozu_white, "tot_len":1, "sig_len":1, "name":"Marubozu White"},
+        {"funct":marubozu_black, "tot_len":1, "sig_len":1, "name":"Marubozu Black"},
+        {"funct":hammer, "tot_len":9, "sig_len":1, "name":"Hammer"},
+        {"funct":piercing_pattern, "tot_len":10, "sig_len":2, "name":"Piercing Pattern"},
+        {"funct":two_crowns, "tot_len":11, "sig_len":3, "name":"Two Crowns"},
+        {"funct":concealing_baby_swallow, "tot_len":12, "sig_len":4, "name":"Concealing Baby Swallow"},
+        {"funct":ladder_bottom, "tot_len":13, "sig_len":5, "name":"Ladder Bottom"},
+        {"funct":takuri_line, "tot_len":9, "sig_len":1, "name":"Takuri Line"},
+        {"funct":kicking_bullish, "tot_len":2, "sig_len":2, "name":"Kicking Bullish"},
+        {"funct":belt_hold_bullish, "tot_len":9, "sig_len":1, "name":"Belt Hold, Bearish"},
+        {"funct":shooting_star_one_candle, "tot_len":9, "sig_len":1, "name":"Shooting Star, One-Candle"},
+        {"funct":belt_hold_bearish, "tot_len":9, "sig_len":1, "name":"Belt Hold, Bearish"}]
 
 
 c=Candlestick(a)
@@ -187,154 +203,23 @@ ts=Timeseries(d)
 print(ts.len)
 print(ts.candls[0].no_ls)
 
-'''
-for i in range(8,len(df)):
-    d=df.iloc[(i-8):(i+1),4:8]
-    ts=Timeseries(d)
-    if hammer(ts):
-        print (df.iloc[i,2], " - hammer")
-'''
-
 ja =[]
-
 
 for i in range(0,len(df)):
     jw={}
-    d=df.iloc[i:(i+1),4:8]
-    ts=Timeseries(d)
-    # вначале проверяем 1-свечные шаблоны, в которых не важен тренд
-    if marubozu_black(ts):
-        jw["Pattern"] = "Marubozu Black"
-        jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["From line"] = str(i)
-        jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["To line"] = str(i)
-        ja.append(jw)
-#        print (df.iloc[i,2], " - black")
-    if marubozu_white(ts):
-        jw["Pattern"] = "Marubozu White"
-        jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["From line"] = str(i)
-        jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["To line"] = str(i)
-        ja.append(jw)
-        #print (df.iloc[i,2], " - white")
-    if marubozu_closing_black(ts):
-        jw["Pattern"] = "Marubozu, Closing Black"
-        jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["From line"] = str(i)
-        jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["To line"] = str(i)
-        ja.append(jw)
-    if marubozu_opening_white(ts):
-        jw["Pattern"] = "Marubozu, Opening White"
-        jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["From line"] = str(i)
-        jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["To line"] = str(i)
-        ja.append(jw)
-    if doji_gravestone(ts):
-        jw["Pattern"] = "Doji, Gravestone"
-        jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["From line"] = str(i)
-        jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["To line"] = str(i)
-        ja.append(jw)
-    if doji_dragonfly(ts):
-        jw["Pattern"] = "Doji, Dragonfly"
-        jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["From line"] = str(i)
-        jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-        jw["To line"] = str(i)
-        ja.append(jw)
-    if i>0: # в этом блоке if проверяем 2-свечные шаблоны
-        d=df.iloc[(i-1):(i+1),4:8]
+    for k in range (0, len(pat1)):
+        if i<(pat1[k]["tot_len"] - 1) : continue
+        d=df.iloc[(i-pat1[k]["tot_len"]+1):(i+1),4:8]
         ts=Timeseries(d)
-        if kicking_bullish(ts):
-            jw["Pattern"] = "Kicking Bullish"
-            jw["From"] = str(df.iloc[i-1,2]) + " " + str(df.iloc[i-1,3])
-            jw["From line"] = str(i-1)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
+        if pat1[k]["funct"](ts):
+            fr=i-pat1[k]["sig_len"]+1
+            jw["Pattern"] = pat1[k]["name"]
+            jw["From line"] = str(fr)
             jw["To line"] = str(i)
-            ja.append(jw)
-    if i>7: # в этом блоке if проверяем 9-свечные шаблоны (8 трендовых+ 1 значимая)
-        d=df.iloc[(i-8):(i+1),4:8]
-        ts=Timeseries(d)
-        if hammer(ts):
-            jw["Pattern"] = "Hammer"
-            jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["From line"] = str(i)
+            jw["From"] = str(df.iloc[fr,2]) + " " + str(df.iloc[fr,3])
             jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-        if takuri_line(ts):
-            jw["Pattern"] = "Takuri Line"
-            jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["From line"] = str(i)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-        if belt_hold_bullish(ts):
-            jw["Pattern"] = "Belt Hold, Bullish"
-            jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["From line"] = str(i)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-        if shooting_star_one_candle(ts):
-            jw["Pattern"] = "Shooting Star, One-Candle"
-            jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["From line"] = str(i)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-        if belt_hold_bearish(ts):
-            jw["Pattern"] = "Belt Hold, Bearish"
-            jw["From"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["From line"] = str(i)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-    if i>8: # в этом блоке if проверяем 10-свечные шаблоны (8 трендовых+ 2 значимых)
-        d=df.iloc[(i-9):(i+1),4:8]
-        ts=Timeseries(d)
-        if piercing_pattern(ts):
-            jw["Pattern"] = "Piercing Pattern"
-            jw["From"] = str(df.iloc[i-1,2]) + " " + str(df.iloc[i-1,3])
-            jw["From line"] = str(i-1)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-    if i>9: # в этом блоке if проверяем 11-свечные шаблоны (8 трендовых+ 3 значимых)
-        d=df.iloc[(i-10):(i+1),4:8]
-        ts=Timeseries(d)
-        if two_crowns(ts):
-            jw["Pattern"] = "Two Crowns"
-            jw["From"] = str(df.iloc[i-2,2]) + " " + str(df.iloc[i-2,3])
-            jw["From line"] = str(i-2)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-    if i>10: # в этом блоке if проверяем 12-свечные шаблоны (8 трендовых+ 4 значимых)
-        d=df.iloc[(i-11):(i+1),4:8]
-        ts=Timeseries(d)
-        if concealing_baby_swallow(ts):
-            jw["Pattern"] = "Concealing Baby Swallow"
-            jw["From"] = str(df.iloc[i-3,2]) + " " + str(df.iloc[i-3,3])
-            jw["From line"] = str(i-3)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
-            ja.append(jw)
-    if i>11: # в этом блоке if проверяем 13-свечные шаблоны (8 трендовых+ 5 значимых)
-        d=df.iloc[(i-12):(i+1),4:8]
-        ts=Timeseries(d)
-        if ladder_bottom(ts):
-            jw["Pattern"] = "Ladder Bottom"
-            jw["From"] = str(df.iloc[i-4,2]) + " " + str(df.iloc[i-4,3])
-            jw["From line"] = str(i-4)
-            jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
-            jw["To line"] = str(i)
             ja.append(jw)
 
-with open("out2.json","w") as jf:
+with open("out2_1.json","w") as jf:
     json.dump(ja, jf)
+
