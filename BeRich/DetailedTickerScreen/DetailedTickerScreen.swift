@@ -50,13 +50,15 @@ struct DetailedTickerScreen: View {
 
     func present(_ chart: DetailedTickerScreenViewModel.Chart) -> some View {
         List {
-            ChartView(stocks: chart.candles, timePeriod: chart.parameters.period)
+            ChartView(stocks: chart.candles,
+                      detectedPatterns: chart.detectedPatterns,
+                      timePeriod: chart.parameters.period)
                 .listRowSeparator(.hidden)
             changeTimePeriodButtons(chart.parameters)
                 .navigationBarTitle(chart.parameters.tickerTitle)
                 .listRowSeparator(.hidden)
-            ForEach(chart.patterns) { pattern in
-                PatternCellView(pattern: pattern)
+            ForEach(chart.detectedPatterns) { pattern in
+                PatternCellView(detectedPattern: pattern)
                     .listRowSeparator(.hidden)
                     .onTapGesture {
                         print(pattern.id)

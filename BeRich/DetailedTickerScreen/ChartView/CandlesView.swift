@@ -3,7 +3,7 @@ import SwiftUI
 
 struct CandlesView: View {
     let stocks: [Stock]
-    let patterns = Fakes.patterns
+    let patterns: [DetectedPattern]
     @Binding var selectedTimePeriod: ChartTimePeriod
     @Binding var selectedChartType: ChartType
     var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
@@ -11,11 +11,15 @@ struct CandlesView: View {
     var body: some View {
         Chart {
             ForEach(patterns) { pattern in // Область паттерна
-                RectangleMark(xStart: .value("Date", pattern.startTimePeriod),
-                              xEnd: .value("Date", pattern.endTimePeriod),
-                              yStart: .value("Low", pattern.lowPrice),
-                              yEnd: .value("High", pattern.highPrice))
-                    .foregroundStyle(Color.patternBlue)
+                RectangleMark(xStart: .value("Date", pattern.startDate),
+                              xEnd: .value("Date", pattern.endDate),
+                              // TODO: Fix height
+                              yStart: .value("Low", 0),
+                              // yStart: .value("Low", pattern.lowPrice),
+                              yEnd: .value("High", 400)
+                              // yStart: .value("Low", pattern.lowPrice),
+                )
+                .foregroundStyle(Color.patternBlue)
             }
             ForEach(stocks) { stock in
                 switch selectedChartType {

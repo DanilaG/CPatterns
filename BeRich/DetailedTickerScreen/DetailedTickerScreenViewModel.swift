@@ -6,7 +6,9 @@ final class DetailedTickerScreenViewModel: ObservableObject {
 
     private let input = PassthroughSubject<Event, Never>()
 
-    init(tickerTitle: String, fetcher: TradingDataNetworkFetching) {
+    init(tickerTitle: String, fetcher: TradingDataNetworkFetching,
+         patternDetector: PatternDetector)
+    {
         state = .initial(ChartParameters(tickerTitle: tickerTitle, period: .day))
 
         Publishers.system(
@@ -14,7 +16,7 @@ final class DetailedTickerScreenViewModel: ObservableObject {
             reduce: Self.reduce,
             scheduler: RunLoop.main,
             feedbacks: [
-                Self.loading(fetcher: fetcher),
+                Self.loading(fetcher: fetcher, patternDetector: patternDetector, patternDetector: patternDetector),
                 Self.userInput(input: input.eraseToAnyPublisher()),
             ]
         )
@@ -51,7 +53,7 @@ extension DetailedTickerScreenViewModel {
     struct Chart {
         let parameters: ChartParameters
         let candles: [Stock]
-        let patterns: [Pattern]
+        let detectedPatterns: [DetectedPattern]
     }
 }
 
@@ -93,7 +95,10 @@ extension DetailedTickerScreenViewModel {
         }
     }
 
-    static func loading(fetcher: TradingDataNetworkFetching) -> Feedback<State, Event> {
+    static func loading(fetcher: TradingDataNetworkFetching,
+                        patternDetector _: PatternDetector,
+                        patternDetector: PatternDetector) -> Feedback<State, Event>
+    {
         Feedback { (state: State) -> AnyPublisher<Event, Never> in
             guard case let .loading(chartParameters) = state else { return Empty().eraseToAnyPublisher() }
             return Future { promise in
@@ -104,11 +109,13 @@ extension DetailedTickerScreenViewModel {
                     ) else {
                         return promise(.success(Event.failedLoad))
                     }
-                    #warning("TODO: add patterns")
+
+                    let detectedPatterns = patternDetector.detectPatterns(candles: candles)
+
                     promise(.success(Event.didLoad(Chart(
                         parameters: chartParameters,
                         candles: candles,
-                        patterns: Fakes.patterns
+                        detectedPatterns: detectedPatterns
                     ))))
                 }
             }
