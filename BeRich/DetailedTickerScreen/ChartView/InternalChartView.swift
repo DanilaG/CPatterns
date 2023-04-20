@@ -121,7 +121,7 @@ struct InternalChartView: View {
                         .background(.white)
                     }
                     .onAppear {
-                        scrollPosition.scrollTo(candleScrollTo)
+                        scrollPosition.scrollTo(stocks.count - 1)
                     }
                     .onChange(of: buttonTapToggle) { _ in
                         withAnimation {
