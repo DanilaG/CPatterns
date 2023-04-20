@@ -4,6 +4,7 @@ import Foundation
 protocol TradingDataNetworkFetching {
     func getBinanceTickers() async -> BinanceTiсkers?
     func getMoexTickers() async -> [Ticker]?
+    func getMoexCandles(ticker: String, timePeriod: ChartTimePeriod) async -> [Stock]?
 }
 
 final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObject {
@@ -56,7 +57,10 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
         return nil
     }
 
-    func getMoexCandles(ticker: String, queryItems: [URLQueryItem]) async -> [Stock]? {
+    func getMoexCandles(ticker: String, timePeriod: ChartTimePeriod) async -> [Stock]? {
+        var queryItems = [URLQueryItem]()
+        queryItems.append(URLQueryItem(name: "iss.reverse", value: "true"))
+        queryItems.append(timePeriod.queryItem)
         guard let url = MoexApi.Method.candles.url(tiсker: ticker, queryItems: queryItems) else {
             assertionFailure()
             return nil
@@ -173,7 +177,7 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
             break
         }
         var highPrice = 0.0
-        let highValue = moexCandles.candles.data[i][1]
+        let highValue = moexCandles.candles.data[i][2]
         switch highValue {
         case let .double(double):
             print(double)
@@ -182,7 +186,7 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
             break
         }
         var lowPrice = 0.0
-        let lowValue = moexCandles.candles.data[i][1]
+        let lowValue = moexCandles.candles.data[i][3]
         switch lowValue {
         case let .double(double):
             print(double)
@@ -212,5 +216,24 @@ extension HTTPURLResponse {
     /// Otherwise false.
     var isSuccessful: Bool {
         200 ... 299 ~= statusCode
+    }
+}
+
+extension ChartTimePeriod {
+    var queryItem: URLQueryItem {
+        let value: String
+        switch self {
+        case .tenMin:
+            value = "10"
+        case .hour:
+            value = "60"
+        case .day:
+            value = "24"
+        case .week:
+            value = "7"
+        case .month:
+            value = "31"
+        }
+        return URLQueryItem(name: "interval", value: value)
     }
 }

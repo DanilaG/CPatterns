@@ -1,7 +1,7 @@
 import Charts
 import SwiftUI
 
-private let unitWidth: CGFloat = 35
+private let unitWidth: CGFloat = 100
 
 class ChartWidth: ObservableObject {
     @Published var chartWidth: CGFloat = .init(Fakes.defaultStocks.count) * unitWidth
@@ -13,6 +13,7 @@ struct InternalChartView: View {
     @Binding private var selectedElement: Stock?
     @State private var selectedTimePeriod: ChartTimePeriod
     @State private var selectedChartType: ChartType = .candleChart
+    var currencyFormater = Decimal.FormatStyle.Currency.currency(code: "RUB")
 
     // Свойство благодаря которому работает скролл
     @State private var scrollTo = true
@@ -77,10 +78,11 @@ struct InternalChartView: View {
                                         }
                                     }
                                     .chartYAxis {
-                                        AxisMarks(position: .trailing, values: .automatic(desiredCount: 10))
+                                        AxisMarks(position: .trailing, values: .automatic(desiredCount: 10)) {
+                                            AxisValueLabel(format: currencyFormater)
+                                        }
                                     }
-                                    // Вертикальный масштаб
-                                    .chartYScale(domain: 140 ... 170)
+                                    .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
                                     .chartXAxis {
                                         AxisMarks(values: .automatic(desiredCount: 10))
                                     }
@@ -136,10 +138,11 @@ struct InternalChartView: View {
                     )
                 }
                 .chartYAxis {
-                    AxisMarks(position: .leading, values: .automatic(desiredCount: 10))
+                    AxisMarks(position: .leading, values: .automatic(desiredCount: 10)) {
+                        AxisValueLabel(format: currencyFormater)
+                    }
                 }
-                .chartYScale(domain: 140 ... 170)
-                // задаем фиксированную ширину контейнера с осью Y
+                .chartYScale(domain: [Stock.stocksMinPriceValue(stocks), Stock.stocksMaxPriceValue(stocks)])
                 .frame(width: 25)
                 .background(.white)
 
