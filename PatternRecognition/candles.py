@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-df=pd.read_csv("sber2.csv")
+df=pd.read_csv("sber3.csv")
 a=df.iloc[0,4:8]
 d=df.iloc[0:1,4:8]
 print (a)
@@ -293,6 +293,6 @@ for i in range(0,len(df)):
             jw["To"] = str(df.iloc[i,2]) + " " + str(df.iloc[i,3])
             ja.append(jw)
 
-with open("out2_1.json","w") as jf:
+with open("out3_1.json","w") as jf:
     json.dump(ja, jf)
 
