@@ -60,7 +60,7 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
     func getMoexCandles(ticker: String, timePeriod: ChartTimePeriod) async -> [Stock]? {
         var queryItems = [URLQueryItem]()
         queryItems.append(URLQueryItem(name: "iss.reverse", value: "true"))
-        queryItems.append(timePeriod.quaryItem)
+        queryItems.append(timePeriod.queryItem)
         guard let url = MoexApi.Method.candles.url(tiсker: ticker, queryItems: queryItems) else {
             assertionFailure()
             return nil
@@ -220,18 +220,20 @@ extension HTTPURLResponse {
 }
 
 extension ChartTimePeriod {
-    var quaryItem: URLQueryItem {
+    var queryItem: URLQueryItem {
+        let value: String
         switch self {
         case .tenMin:
-            return URLQueryItem(name: "interval", value: "10")
+            value = "10"
         case .hour:
-            return URLQueryItem(name: "interval", value: "60")
+            value = "60"
         case .day:
-            return URLQueryItem(name: "interval", value: "24")
+            value = "24"
         case .week:
-            return URLQueryItem(name: "interval", value: "7")
+            value = "7"
         case .month:
-            return URLQueryItem(name: "interval", value: "31")
+            value = "31"
         }
+        return URLQueryItem(name: "interval", value: value)
     }
 }

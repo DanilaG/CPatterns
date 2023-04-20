@@ -98,7 +98,10 @@ extension DetailedTickerScreenViewModel {
             guard case let .loading(chartParameters) = state else { return Empty().eraseToAnyPublisher() }
             return Future { promise in
                 Task.detached {
-                    guard let candles = await fetcher.getMoexCandles(ticker: chartParameters.tickerTitle, timePeriod: chartParameters.period) else {
+                    guard let candles = await fetcher.getMoexCandles(
+                        ticker: chartParameters.tickerTitle,
+                        timePeriod: chartParameters.period
+                    ) else {
                         return promise(.success(Event.failedLoad))
                     }
                     #warning("TODO: add patterns")
