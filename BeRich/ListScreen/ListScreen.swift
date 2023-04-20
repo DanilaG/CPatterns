@@ -25,7 +25,6 @@ struct ListScreen: View {
                     error()
                 }
             }
-            .padding(.horizontal, 16.0)
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .background(Color.background)
@@ -59,7 +58,9 @@ struct ListScreen: View {
                                 .addBorder(Color.stroke, width: 0.5, cornerRadius: cellCornerRadius)
                                 .shadow(color: .shadow, radius: 8, y: 4)
                                 .padding(.vertical, 8)
+                                .padding(.horizontal, 16.0)
                         )
+                        .padding(.horizontal, 16.0)
                 }
             } else {
                 ZStack {
