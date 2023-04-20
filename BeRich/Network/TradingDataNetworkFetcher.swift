@@ -85,7 +85,9 @@ private func decodeJSON<T: Decodable>(type: T.Type, from data: Data) throws -> T
 }
 
 private func request(_ url: URL) async throws -> Data {
-    let session = URLSession(configuration: .default)
+    var configuration = URLSessionConfiguration.default
+    configuration.timeoutIntervalForRequest = 10
+    let session = URLSession(configuration: configuration)
     let (data, response) = try await session.data(for: URLRequest(url: url))
     guard let httpURLResponse = response.httpURLResponse, httpURLResponse.isSuccessful else {
         throw NetworkingError.requestFailed
