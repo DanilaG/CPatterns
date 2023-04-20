@@ -2,12 +2,14 @@ import SwiftUI
 
 struct ChartView: View {
     var stocks: [Stock]
+    let detectedPatterns: [DetectedPattern]
     @State private var selectedElement: Stock? = nil
     @State var timePeriod: ChartTimePeriod
     @Environment(\.layoutDirection) var layoutDirection
 
     var body: some View {
         InternalChartView(stocks: stocks,
+                          detectedPatterns: detectedPatterns,
                           selectedTimePeriod: timePeriod,
                           selectedElement: $selectedElement)
             .chartBackground { proxy in

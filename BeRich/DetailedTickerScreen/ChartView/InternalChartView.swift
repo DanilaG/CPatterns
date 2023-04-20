@@ -9,7 +9,8 @@ class ChartWidth: ObservableObject {
 
 struct InternalChartView: View {
     @Environment(\.refresh) private var refresh
-    var stocks: [Stock]
+    private var stocks: [Stock]
+    private var detectedPatterns: [DetectedPattern]
     @Binding private var selectedElement: Stock?
     @State private var selectedTimePeriod: ChartTimePeriod
     @State private var selectedChartType: ChartType = .candleChart
@@ -28,10 +29,12 @@ struct InternalChartView: View {
     @State private var candleScrollTo: Int
 
     init(stocks: [Stock],
+         detectedPatterns: [DetectedPattern],
          selectedTimePeriod: ChartTimePeriod,
          selectedElement: Binding<Stock?>)
     {
         self.stocks = stocks
+        self.detectedPatterns = detectedPatterns
         _selectedTimePeriod = State(initialValue: selectedTimePeriod)
         _candleScrollTo = State(initialValue: stocks.count - 1)
         _selectedElement = Binding(projectedValue: selectedElement)
@@ -46,7 +49,10 @@ struct InternalChartView: View {
                             ZStack {
                                 ChartUnderlayForScroll(stocksCount: stocks.count,
                                                        chartWidth: chartWidth)
-                                CandlesView(stocks: stocks, selectedTimePeriod: $selectedTimePeriod, selectedChartType: $selectedChartType)
+                                CandlesView(stocks: stocks,
+                                            patterns: detectedPatterns,
+                                            selectedTimePeriod: $selectedTimePeriod,
+                                            selectedChartType: $selectedChartType)
                                     .chartOverlay { proxy in
                                         GeometryReader { nthGeometryItem in
                                             Rectangle().fill(.clear).contentShape(Rectangle())
