@@ -282,9 +282,9 @@ extension CandlePattern {
         case .takuriLine:
             return { t in
                 CandlePattern.pt(t) == -1 &&
-                t.candlesticks[8].small_body &&
-                t.candlesticks[8].no_us &&
-                ( t.candlesticks[8].ls > 3*t.candlesticks[8].hb)
+                    t.candlesticks[8].small_body &&
+                    t.candlesticks[8].no_us &&
+                    (t.candlesticks[8].ls > 3 * t.candlesticks[8].hb)
             }
         case .kickingBullish:
             return { t in
