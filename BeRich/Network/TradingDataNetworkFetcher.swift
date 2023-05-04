@@ -41,20 +41,30 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
     }
 
     func getMoexTickers() async -> [Ticker]? {
-        guard let url = MoexApi.Method.allTiсkers.url(tiсker: nil) else {
-            assertionFailure()
-            return nil
-        }
-        print(url)
-        do {
-            let data = try await request(url)
-            let moexTickers = try decodeJSON(type: MoexTiсkers.self, from: data)
-            let tickers = parseMoexTikers(moexTickers: moexTickers)
-            return tickers
-        } catch {
-            print(error)
-        }
-        return nil
+        var tickers: [Ticker] = []
+        var cursor = Cursor(index: 0, total: 0, pageSize: 0)
+
+        repeat {
+            guard let url = MoexApi.Method.allTiсkers.url(
+                tiсker: nil,
+                queryItems: [URLQueryItem(name: "start", value: String(cursor.index + cursor.pageSize))]
+            ) else {
+                assertionFailure()
+                return nil
+            }
+
+            do {
+                let data = try await request(url)
+                let moexTickers = try decodeJSON(type: MoexTiсkers.self, from: data)
+                cursor = parseMoexCursor(moexTickers: moexTickers)
+                tickers += parseMoexTikers(moexTickers: moexTickers)
+            } catch {
+                return nil
+            }
+
+        } while (cursor.index + cursor.pageSize) < cursor.total
+
+        return tickers
     }
 
     func getMoexCandles(ticker: String, timePeriod: ChartTimePeriod) async -> [Stock]? {
@@ -78,6 +88,12 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
     }
 }
 
+private struct Cursor {
+    var index: Int
+    let total: Int
+    let pageSize: Int
+}
+
 private func decodeJSON<T: Decodable>(type: T.Type, from data: Data) throws -> T {
     let decoder = JSONDecoder()
     let response = try decoder.decode(type, from: data)
@@ -95,6 +111,14 @@ private func request(_ url: URL) async throws -> Data {
     print(httpURLResponse.statusCode)
     print(httpURLResponse.allHeaderFields)
     return data
+}
+
+private func parseMoexCursor(moexTickers: MoexTiсkers) -> Cursor {
+    Cursor(
+        index: moexTickers.cursor.data[0][0],
+        total: moexTickers.cursor.data[0][1],
+        pageSize: moexTickers.cursor.data[0][2]
+    )
 }
 
 private func parseMoexTikers(moexTickers: MoexTiсkers) -> [Ticker] {

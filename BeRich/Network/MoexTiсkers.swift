@@ -1,8 +1,9 @@
-
 import Foundation
 
 struct MoexTiсkers: Decodable {
     let history: History
+    let cursor: Cursor
+
     struct History: Decodable {
         let columns: [String]
         let data: [[MoexTiсker]]
@@ -31,5 +32,14 @@ struct MoexTiсkers: Decodable {
                 throw DecodingError.typeMismatch(MoexTiсker.self, error)
             }
         }
+    }
+
+    struct Cursor: Decodable {
+        let data: [[Int]]
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case history
+        case cursor = "history.cursor"
     }
 }
