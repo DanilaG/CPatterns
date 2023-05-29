@@ -2,8 +2,6 @@ import SwiftUI
 
 struct PatternCellView: View {
     @State var patternViewData: PatternViewData
-    let patternColors: [Color] = [.patternDarkGreen, .patternPink, .patternBlue]
-    @State private var isFavourite = false
 
     var body: some View {
         Group {
@@ -27,18 +25,11 @@ struct PatternCellView: View {
         }
         .background(Color.white)
         .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.stroke,
-                        lineWidth: 1)
+            RoundedRectangle(cornerRadius: 16.0)
+                .stroke(Color.stroke, lineWidth: 1)
         )
-        .addBorder(Color.stroke,
-                   width: 0.5,
-                   cornerRadius: 24)
-        .shadow(color: .shadow,
-                radius: 8,
-                y: 4)
-        .frame(height: 42)
-        .padding(.bottom, 16)
-        .padding(.horizontal, 12)
+        .addBorder(Color.stroke, width: 0.5, cornerRadius: 16.0)
+        .shadow(color: .shadow, radius: 8, y: 4)
+        .padding(.horizontal, 16.0)
     }
 }

@@ -1,9 +1,13 @@
 import SwiftUI
 
+// TODO: не скролит далеко
 struct DetailedTickerScreen: View {
     @StateObject var viewModel: DetailedTickerScreenViewModel
     @State var patternId = 0
-    @State var buttonTapToggle = true
+    @State var pattern: PatternViewData? = nil
+
+    let chartId = "chart"
+
     init(viewModel: DetailedTickerScreenViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -50,44 +54,53 @@ struct DetailedTickerScreen: View {
     }
 
     func present(_ chart: DetailedTickerScreenViewModel.Chart) -> some View {
-        List {
-            ChartView(stocks: chart.candles,
-                      patternViewData: toViewData(chart.detectedPatterns), timePeriod: chart.parameters.period,
-                      patternId: $patternId,
-                      buttonTapToggle: $buttonTapToggle)
-                .listRowSeparator(.hidden)
-            changeTimePeriodButtons(chart.parameters)
-                .navigationBarTitle(chart.parameters.tickerTitle)
-                .listRowSeparator(.hidden)
-            ForEach(toViewData(chart.detectedPatterns), id: \.detectedPattern.id) { pattern in
-                PatternCellView(patternViewData: pattern)
-                    .listRowSeparator(.hidden)
-                    .onTapGesture {
-                        for (index, value) in chart.candles.enumerated() {
-                            if value.date == pattern.detectedPattern.startDate {
-                                patternId = index
-                                buttonTapToggle.toggle()
-                            }
+        ScrollViewReader { scroll in
+            List {
+                VStack {
+                    ScrolledCandlesChart(
+                        patterns: toViewData(chart.detectedPatterns),
+                        stocks: chart.candles,
+                        timePeriod: chart.parameters.period,
+                        scrollToPattern: $pattern
+                    )
+                    changeTimePeriodButtons(chart.parameters)
+                        .navigationBarTitle(chart.parameters.tickerTitle)
+
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Паттерны")
+                            .font(.title)
+                            .padding(.horizontal)
+                        ForEach(toViewData(chart.detectedPatterns), id: \.detectedPattern.id) { pattern in
+                            PatternCellView(patternViewData: pattern)
+                                .onTapGesture {
+                                    self.pattern = pattern
+                                    withAnimation {
+                                        scroll.scrollTo(chartId)
+                                    }
+                                }
                         }
                     }
+                }
+                .id(chartId)
+                .listRowSeparator(.hidden)
             }
+            .padding(.top, -12)
+            .padding(.horizontal, -20)
+            .listStyle(.plain)
         }
-        .padding(.top, -12)
-        .padding(.horizontal, -20)
-        .listStyle(.plain)
-        .background(.red)
     }
 
-    @ViewBuilder func changeTimePeriodButtons(_ parameters: DetailedTickerScreenViewModel.ChartParameters) -> some View {
+    func changeTimePeriodButtons(_ parameters: DetailedTickerScreenViewModel.ChartParameters) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
-                ForEach(ChartTimePeriod.allCases) { timePeriod in
-
+                Text("Свеча:")
+                    .foregroundColor(.secondary)
+                ForEach(ChartTimePeriod.allCases, id: \.rawValue) { timePeriod in
                     Button {
                         viewModel.send(event: .didChangeTimePeriod(timePeriod))
                     } label: {
                         Text(timePeriod.title)
-                            .padding(.horizontal, 8)
+                            .padding(.horizontal, 12)
                             .padding(.vertical, 4)
                             .background(parameters.period == timePeriod ? Color.blueMain : Color.whiteMain).cornerRadius(20)
                             .foregroundColor(parameters.period == timePeriod ? .whiteMain : .blueMain)
@@ -95,8 +108,8 @@ struct DetailedTickerScreen: View {
                     }
                 }
             }
-            .padding()
         }
+        .padding([.horizontal, .bottom])
     }
 }
 
@@ -115,4 +128,17 @@ private func toViewData(_ patterns: [DetectedPattern]) -> [PatternViewData] {
 struct PatternViewData {
     let detectedPattern: DetectedPattern
     let color: Color
+}
+
+extension ChartTimePeriod {
+    var title: String {
+        switch self {
+        case .day:
+            return "День"
+        case .week:
+            return "Неделя"
+        case .month:
+            return "Месяц"
+        }
+    }
 }

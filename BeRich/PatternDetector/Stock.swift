@@ -38,7 +38,7 @@ public struct Stock: Identifiable {
 }
 
 private let minPriceDefaultValue = 0.0
-private let maxPriceDefaultValue = 1000.0
+private let maxPriceDefaultValue = 10000.0
 extension Stock {
     static func stocksMinPriceValue(_ stocks: [Stock]) -> Double {
         stocks.min(by: { $0.lowPrice < $1.lowPrice })?.lowPrice ?? minPriceDefaultValue
