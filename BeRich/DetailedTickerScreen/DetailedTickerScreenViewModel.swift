@@ -14,7 +14,7 @@ final class DetailedTickerScreenViewModel: ObservableObject {
         Publishers.system(
             initial: state,
             reduce: Self.reduce,
-            scheduler: RunLoop.main,
+            scheduler: DispatchQueue.main,
             feedbacks: [
                 Self.loading(fetcher: fetcher, patternDetector: patternDetector, patternDetector: patternDetector),
                 Self.userInput(input: input.eraseToAnyPublisher()),
