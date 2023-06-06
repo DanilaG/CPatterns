@@ -96,6 +96,7 @@ struct DetailedTickerScreen: View {
             HStack {
                 Text("Свеча:")
                     .foregroundColor(.secondary)
+                    .padding(.leading)
                 ForEach(ChartTimePeriod.allCases, id: \.rawValue) { timePeriod in
                     Button {
                         viewModel.send(event: .didChangeTimePeriod(timePeriod))
@@ -110,7 +111,7 @@ struct DetailedTickerScreen: View {
                 }
             }
         }
-        .padding([.horizontal, .bottom])
+        .padding(.bottom)
     }
 }
 
