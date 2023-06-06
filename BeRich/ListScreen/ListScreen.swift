@@ -94,7 +94,7 @@ struct ListScreen: View {
 }
 
 private let cellCornerRadius = 16.0
-private let screenTitle = "BeRich"
+private let screenTitle = "Акции"
 private let defaultErrorMessage = "К сожалению, что-то пошло не так"
 private let tryAgain = "Попробовать ещё раз"
 private let notFound = "Ничего не найдено"
