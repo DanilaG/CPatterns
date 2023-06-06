@@ -68,8 +68,8 @@ struct DetailedTickerScreen: View {
                         .navigationBarTitle(chart.parameters.tickerTitle)
 
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("Паттерны")
-                            .font(.title)
+                        Text(chart.detectedPatterns.isEmpty ? "Паттерны не найдены" : "Паттерны")
+                            .font(chart.detectedPatterns.isEmpty ? nil : .title)
                             .padding(.horizontal)
                         ForEach(toViewData(chart.detectedPatterns), id: \.detectedPattern.id) { pattern in
                             PatternCellView(patternViewData: pattern)
