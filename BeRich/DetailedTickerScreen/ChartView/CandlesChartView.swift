@@ -37,7 +37,7 @@ struct CandlesChartView: View {
                     x: .value("Date", stock.date, unit: selectedTimePeriod.calendarComponent),
                     yStart: .value("Open", stock.openPrice),
                     yEnd: .value("Close", stock.closePrice),
-                    width: 8
+                    width: 16
                 )
                 .foregroundStyle(
                     stock.openPrice <= stock.closePrice ? Color.greenMain : Color.redMain
@@ -46,7 +46,7 @@ struct CandlesChartView: View {
         }
         .chartYAxis(.hidden)
         .chartXAxis {
-            AxisMarks(values: .stride(by: selectedTimePeriod.xAxisStride, count: 1)) {
+            AxisMarks(values: .stride(by: selectedTimePeriod.xAxisStride, count: 4)) {
                 AxisValueLabel(format: selectedTimePeriod.xAxisFormat, centered: false)
                 AxisGridLine()
             }

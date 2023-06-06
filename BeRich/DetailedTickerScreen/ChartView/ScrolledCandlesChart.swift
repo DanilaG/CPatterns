@@ -7,7 +7,7 @@ struct ScrolledCandlesChart: View {
     @State var timePeriod: ChartTimePeriod
     @Binding var scrollToPattern: PatternViewData?
 
-    private let candleWidth: CGFloat = 12.0
+    private let candleWidth: CGFloat = 20.0
 
     var width: CGFloat {
         CGFloat(stocks.numberTimeUnits(timePeriod)) * candleWidth
