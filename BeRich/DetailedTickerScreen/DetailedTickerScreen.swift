@@ -33,6 +33,7 @@ struct DetailedTickerScreen: View {
         .onAppear {
             viewModel.send(event: .didAppear)
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func loading() -> some View {
