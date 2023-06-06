@@ -20,22 +20,34 @@ struct ScrolledCandlesChart: View {
     var body: some View {
         ScrollViewReader { scrollPosition in
             ZStack(alignment: .bottomTrailing) {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    ZStack(alignment: .leading) {
-                        candleScrollUnderlie
-                        chart
+                HStack {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        ZStack(alignment: .leading) {
+                            candleScrollUnderlie
+                            chart
+                        }
                     }
-                }
-                .onAppear {
-                    scrollPosition.scrollTo(lastCandleId)
-                }
-                .onChange(of: scrollToPattern) { newValue in
-                    guard let newValue else { return }
-                    let candleIndex = stocks.timeUnitFromFirst(newValue.detectedPattern.endDate, timePeriod)
-                    withAnimation {
-                        scrollPosition.scrollTo(idForCandle(candleIndex), anchor: .center)
+                    .onAppear {
+                        scrollPosition.scrollTo(lastCandleId)
                     }
-                    print(candleIndex)
+                    .onChange(of: scrollToPattern) { newValue in
+                        guard let newValue else { return }
+                        let candleIndex = stocks.timeUnitFromFirst(newValue.detectedPattern.endDate, timePeriod)
+                        withAnimation {
+                            scrollPosition.scrollTo(idForCandle(candleIndex), anchor: .center)
+                        }
+                        print(candleIndex)
+                    }
+
+                    Chart {}
+                        .chartYAxis {
+                            AxisMarks(position: .leading) {
+                                AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+                            }
+                        }
+                        .background(.clear)
+                        .chartYScale(domain: Stock.stocksMinPriceValue(stocks) ... Stock.stocksMaxPriceValue(stocks))
+                        .frame(width: 60)
                 }
 
                 Button(action: {
@@ -49,7 +61,7 @@ struct ScrolledCandlesChart: View {
                 })
                 .buttonStyle(.bordered)
                 .background((Color.blueMain).cornerRadius(8))
-                .padding(.trailing, 20)
+                .padding(.trailing, 80)
                 .padding(.bottom, 20)
             }
         }.frame(height: 400)
