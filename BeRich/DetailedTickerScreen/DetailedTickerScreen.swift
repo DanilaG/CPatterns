@@ -104,7 +104,8 @@ struct DetailedTickerScreen: View {
                         Text(timePeriod.title)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 4)
-                            .background(parameters.period == timePeriod ? Color.blueMain : Color.whiteMain).cornerRadius(20)
+                            .background(parameters.period == timePeriod ? Color.blueMain : Color.whiteMain)
+                            .cornerRadius(20)
                             .foregroundColor(parameters.period == timePeriod ? .whiteMain : .blueMain)
                             .addBorder(Color.blueMain, width: 1, cornerRadius: 20)
                     }

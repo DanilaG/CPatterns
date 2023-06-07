@@ -59,11 +59,11 @@ struct ScrolledCandlesChart: View {
                         }
                     }, label: {
                         Image(systemName: "chevron.right")
-                            .foregroundColor(Color.white)
-                            .frame(width: 16, height: 20)
+                            .foregroundColor(Color.blueMain)
+                            .frame(width: 24, height: 24)
+                            .addBorder(Color.blueMain, width: 1, cornerRadius: 24)
                     })
-                    .buttonStyle(.bordered)
-                    .background((Color.blueMain).cornerRadius(8))
+                    .buttonStyle(.plain)
                     .padding(.trailing, 80)
                     .padding(.bottom, 20)
                 }
