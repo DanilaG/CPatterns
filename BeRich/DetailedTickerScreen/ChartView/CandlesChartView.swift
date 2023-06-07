@@ -2,8 +2,8 @@ import Charts
 import SwiftUI
 
 struct CandlesChartView: View {
-    @State var patterns: [PatternViewData]
-    @State var stocks: [Stock]
+    var patterns: [PatternViewData]
+    var stocks: [Stock]
     @Binding var selectedTimePeriod: ChartTimePeriod
 
     var minPrice: Double {
@@ -16,14 +16,14 @@ struct CandlesChartView: View {
 
     var body: some View {
         Chart {
-            ForEach(patterns, id: \.detectedPattern.id) {
+            ForEach(patterns, id: \.id) {
                 RectangleMark(
-                    xStart: .value("Date", $0.detectedPattern.startDate, unit: selectedTimePeriod.calendarComponent),
-                    xEnd: .value("Date", $0.detectedPattern.endDate, unit: selectedTimePeriod.calendarComponent),
+                    xStart: .value("Date", $0.startDate, unit: selectedTimePeriod.calendarComponent),
+                    xEnd: .value("Date", $0.endDate, unit: selectedTimePeriod.calendarComponent),
                     yStart: .value("Low", minPrice),
                     yEnd: .value("High", maxPrice)
                 )
-                .foregroundStyle($0.color.opacity(0.4))
+                .foregroundStyle(($0.isSelected ? Color.blueMain : Color.gray400).opacity($0.isSelected ? 1.0 : 0.4))
             }
             ForEach(stocks) { stock in
                 RectangleMark(

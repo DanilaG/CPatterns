@@ -1,12 +1,15 @@
 import Charts
+import Combine
 import SwiftUI
 
 struct ScrolledCandlesChart: View {
-    @State var patterns: [PatternViewData]
-    @State var stocks: [Stock]
+    var patterns: [PatternViewData]
+    var stocks: [Stock]
     @State var timePeriod: ChartTimePeriod
-    @Binding var scrollToPattern: PatternViewData?
+    let scrollToPattern: AnyPublisher<PatternViewData, Never>
+    let onPatternsSelect: ([PatternViewData]) -> Void
 
+    @State private var scrollToPatternBag: AnyCancellable? = nil
     private let candleWidth: CGFloat = 20.0
 
     var width: CGFloat {
@@ -18,53 +21,54 @@ struct ScrolledCandlesChart: View {
     }
 
     var body: some View {
-        ScrollViewReader { scrollPosition in
-            ZStack(alignment: .bottomTrailing) {
-                HStack {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        ZStack(alignment: .leading) {
-                            candleScrollUnderlie
-                            chart
-                        }
-                    }
-                    .onAppear {
-                        scrollPosition.scrollTo(lastCandleId)
-                    }
-                    .onChange(of: scrollToPattern) { newValue in
-                        guard let newValue else { return }
-                        let candleIndex = stocks.timeUnitFromFirst(newValue.detectedPattern.endDate, timePeriod)
-                        withAnimation {
-                            scrollPosition.scrollTo(idForCandle(candleIndex), anchor: .center)
-                        }
-                        print(candleIndex)
-                    }
-
-                    Chart {}
-                        .chartYAxis {
-                            AxisMarks(position: .leading) {
-                                AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+        VStack(alignment: .leading) {
+            ScrollViewReader { scrollPosition in
+                ZStack(alignment: .bottomTrailing) {
+                    HStack {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            ZStack(alignment: .leading) {
+                                chart
+                                candleScrollUnderlie
                             }
                         }
-                        .background(.clear)
-                        .chartYScale(domain: Stock.stocksMinPriceValue(stocks) ... Stock.stocksMaxPriceValue(stocks))
-                        .frame(width: 60)
-                }
+                        .onAppear {
+                            scrollToPatternBag?.cancel()
+                            scrollToPatternBag = scrollToPattern.sink { newValue in
+                                let candleIndex = stocks.timeUnitFromFirst(newValue.endDate, timePeriod)
+                                withAnimation {
+                                    scrollPosition.scrollTo(idForCandle(candleIndex), anchor: .center)
+                                }
+                            }
+                            scrollPosition.scrollTo(lastCandleId)
+                        }
 
-                Button(action: {
-                    withAnimation {
-                        scrollPosition.scrollTo(lastCandleId)
+                        Chart {}
+                            .chartYAxis {
+                                AxisMarks(position: .leading) {
+                                    AxisValueLabel(format: Decimal.FormatStyle.Currency.currency(code: "RUB"))
+                                }
+                            }
+                            .background(.clear)
+                            .chartYScale(domain: Stock.stocksMinPriceValue(stocks) ... Stock.stocksMaxPriceValue(stocks))
+                            .frame(width: 60)
                     }
-                }, label: {
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(Color.white)
-                        .frame(width: 16, height: 20)
-                })
-                .buttonStyle(.bordered)
-                .background((Color.blueMain).cornerRadius(8))
-                .padding(.trailing, 80)
-                .padding(.bottom, 20)
-            }
-        }.frame(height: 400)
+
+                    Button(action: {
+                        withAnimation {
+                            scrollPosition.scrollTo(lastCandleId)
+                        }
+                    }, label: {
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(Color.white)
+                            .frame(width: 16, height: 20)
+                    })
+                    .buttonStyle(.bordered)
+                    .background((Color.blueMain).cornerRadius(8))
+                    .padding(.trailing, 80)
+                    .padding(.bottom, 20)
+                }
+            }.frame(height: 400)
+        }
     }
 
     private var chart: some View {
@@ -83,9 +87,13 @@ struct ScrolledCandlesChart: View {
         HStack(spacing: 0) {
             ForEach(0 ..< (stocks.numberTimeUnits(timePeriod)), id: \.self) { candleNumber in
                 Rectangle()
-                    // .fill(.clear)
-                    .fill((candleNumber % 2 == 0 ? Color.red : Color.blue).opacity(0.1))
-                    .frame(maxWidth: .infinity, maxHeight: 0)
+                    .fill(.clear)
+                    .contentShape(Rectangle())
+                    .frame(maxWidth: .infinity)
+                    .onTapGesture {
+                        let date = stocks.toDate(unitNumber: candleNumber, timePeriod)
+                        onPatternsSelect(patterns.filter { $0.startDate <= date && date <= $0.endDate })
+                    }
                     .id(idForCandle(candleNumber))
             }
         }
@@ -97,6 +105,11 @@ struct ScrolledCandlesChart: View {
 }
 
 extension [Stock] {
+    func toDate(unitNumber: Int, _ timePeriod: ChartTimePeriod) -> Date {
+        let min = self.min(by: { $0.date < $1.date })?.date ?? Date()
+        return Calendar.current.date(byAdding: timePeriod.calendarComponent, value: unitNumber, to: min) ?? Date()
+    }
+
     func numberTimeUnits(_ timePeriod: ChartTimePeriod) -> Int {
         let min = self.min(by: { $0.date < $1.date })?.date ?? Date()
         let max = self.max(by: { $0.date < $1.date })?.date ?? Date()
@@ -119,11 +132,5 @@ extension [Stock] {
         case .month:
             return result.month
         }
-    }
-}
-
-extension PatternViewData: Equatable {
-    static func == (lhs: PatternViewData, rhs: PatternViewData) -> Bool {
-        lhs.detectedPattern.id == rhs.detectedPattern.id
     }
 }

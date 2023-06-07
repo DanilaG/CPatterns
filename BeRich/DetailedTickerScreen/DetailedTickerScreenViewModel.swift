@@ -43,6 +43,7 @@ extension DetailedTickerScreenViewModel {
         case didLoad(Chart)
         case failedLoad
         case didChangeTimePeriod(ChartTimePeriod)
+        case didSelectPatterns([PatternViewData])
     }
 
     struct ChartParameters {
@@ -53,7 +54,7 @@ extension DetailedTickerScreenViewModel {
     struct Chart {
         let parameters: ChartParameters
         let candles: [Stock]
-        let detectedPatterns: [DetectedPattern]
+        let detectedPatterns: [PatternViewData]
     }
 }
 
@@ -82,6 +83,14 @@ extension DetailedTickerScreenViewModel {
             switch event {
             case let .didChangeTimePeriod(period):
                 return .loading(ChartParameters(tickerTitle: chart.parameters.tickerTitle, period: period))
+            case let .didSelectPatterns(selectedPatterns):
+                return .loaded(Chart(
+                    parameters: chart.parameters,
+                    candles: chart.candles,
+                    detectedPatterns: chart.detectedPatterns.map { pattern in
+                        PatternViewData(pattern, isSelected: selectedPatterns.contains(where: { $0.id == pattern.id }))
+                    }.sorted()
+                ))
             default:
                 return state
             }
@@ -116,6 +125,8 @@ extension DetailedTickerScreenViewModel {
                         parameters: chartParameters,
                         candles: candles,
                         detectedPatterns: detectedPatterns
+                            .map(PatternViewData.init)
+                            .sorted()
                     ))))
                 }
             }
@@ -125,5 +136,15 @@ extension DetailedTickerScreenViewModel {
 
     static func userInput(input: AnyPublisher<Event, Never>) -> Feedback<State, Event> {
         Feedback { _ in input }
+    }
+}
+
+extension [PatternViewData] {
+    func sorted() -> [PatternViewData] {
+        sorted(by: {
+            if $0.isSelected, !$1.isSelected { return true }
+            if !$0.isSelected, $1.isSelected { return false }
+            return $0.startDate > $1.startDate
+        })
     }
 }

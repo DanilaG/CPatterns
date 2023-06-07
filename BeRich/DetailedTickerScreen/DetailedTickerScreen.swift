@@ -1,10 +1,9 @@
+import Combine
 import SwiftUI
 
-// TODO: не скролит далеко
 struct DetailedTickerScreen: View {
     @StateObject var viewModel: DetailedTickerScreenViewModel
-    @State var patternId = 0
-    @State var pattern: PatternViewData? = nil
+    @State var scrollToPattern = PassthroughSubject<PatternViewData, Never>()
 
     let chartId = "chart"
 
@@ -59,10 +58,11 @@ struct DetailedTickerScreen: View {
             List {
                 VStack {
                     ScrolledCandlesChart(
-                        patterns: toViewData(chart.detectedPatterns),
+                        patterns: chart.detectedPatterns,
                         stocks: chart.candles,
                         timePeriod: chart.parameters.period,
-                        scrollToPattern: $pattern
+                        scrollToPattern: scrollToPattern.eraseToAnyPublisher(),
+                        onPatternsSelect: { viewModel.send(event: .didSelectPatterns($0)) }
                     )
                     changeTimePeriodButtons(chart.parameters)
                         .navigationBarTitle(chart.parameters.tickerTitle)
@@ -71,15 +71,15 @@ struct DetailedTickerScreen: View {
                         Text(chart.detectedPatterns.isEmpty ? "Паттерны не найдены" : "Паттерны")
                             .font(chart.detectedPatterns.isEmpty ? nil : .title)
                             .padding(.horizontal)
-                        ForEach(toViewData(chart.detectedPatterns), id: \.detectedPattern.id) { pattern in
+                        ForEach(chart.detectedPatterns, id: \.id) { pattern in
                             PatternCellView(patternViewData: pattern)
                                 .onTapGesture {
-                                    self.pattern = pattern
-                                    withAnimation {
-                                        scroll.scrollTo(chartId)
-                                    }
+                                    scrollToPattern.send(pattern)
+                                    viewModel.send(event: .didSelectPatterns([pattern]))
+                                    scroll.scrollTo(chartId)
                                 }
                         }
+                        .animation(.easeInOut, value: chart.detectedPatterns)
                     }
                 }
                 .id(chartId)
@@ -116,21 +116,6 @@ struct DetailedTickerScreen: View {
 }
 
 private let defaultErrorMessage = "Ошибка загрузки"
-
-private func toViewData(_ patterns: [DetectedPattern]) -> [PatternViewData] {
-    let patternColors: [Color] = [.patternDarkGreen, .patternPink, .patternBlue, .patternDarkPink, .patternBrown, .patternDarkBlue]
-    return patterns.sorted(by: { $0.startDate > $1.startDate }).enumerated().map {
-        PatternViewData(
-            detectedPattern: $0.element,
-            color: patternColors[$0.offset % patternColors.count]
-        )
-    }
-}
-
-struct PatternViewData {
-    let detectedPattern: DetectedPattern
-    let color: Color
-}
 
 extension ChartTimePeriod {
     var title: String {
