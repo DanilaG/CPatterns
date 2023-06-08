@@ -6,7 +6,7 @@ struct TickerCellView: View {
     var body: some View {
         Group {
             HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(ticker.title)
                         .font(.title2)
                         .foregroundColor(.black)
@@ -17,18 +17,23 @@ struct TickerCellView: View {
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 0) {
+                VStack(alignment: .trailing, spacing: 2) {
                     Text(String(describing: ticker.price))
-                        .font(.title)
-                        .foregroundColor(Color.yellowMain)
-                    Text(String(describing: ticker.priceChange))
-                        .lineLimit(1)
-                        .frame(width: 84)
-                        .font(Font.subheadline)
-                        .foregroundColor(Color.white)
-                        .padding(2)
-                        .background(ticker.priceChangeColor)
-                        .cornerRadius(4)
+                        .font(.title2)
+                        .foregroundColor(Color.black)
+                    HStack(alignment: .center) {
+                        Spacer()
+                        Text(String(describing: ticker.priceChange))
+                            .multilineTextAlignment(.trailing)
+                            .lineLimit(1)
+                            .padding(.horizontal, 4.0)
+                            .font(.subheadline.bold())
+                    }
+                    .frame(width: 84)
+                    .foregroundColor(Color.white)
+                    .padding(2)
+                    .background(ticker.priceChangeColor)
+                    .cornerRadius(4)
                 }
                 .padding(.trailing, 8)
             }
