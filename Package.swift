@@ -15,18 +15,18 @@ let package = Package(
         // MARK: Executables
 
         .target(
-            name: "BeRich",
-            path: "BeRich/PatternDetector"
+            name: "Doji",
+            path: "Doji/PatternDetector"
         ),
 
         // MARK: Tests
 
         .testTarget(
-            name: "BeRichTests",
+            name: "DojiTests",
             dependencies: [
-                "BeRich",
+                "Doji",
             ],
-            path: "BeRichTests",
+            path: "DojiTests",
             resources: [
                 .process("sber.csv"),
             ]

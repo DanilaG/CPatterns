@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import BeRich
+@testable import Doji
 
 final class PatternRecognitionTests: XCTestCase {
     let patternDetector = PatternDetector()
