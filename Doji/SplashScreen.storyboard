@@ -16,14 +16,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1yi-Rs-uF6">
-                                <rect key="frame" x="162.33333333333334" y="402" width="68.666666666666657" height="48"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo.splash" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hMf-mS-Jf4">
+                                <rect key="frame" x="100" y="309.66666666666669" width="193" height="193"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="hMf-mS-Jf4" secondAttribute="height" multiplier="1:1" id="c8k-IU-vXc"/>
+                                </constraints>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="right" translatesAutoresizingMaskIntoConstraints="NO" id="1yi-Rs-uF6">
+                                <rect key="frame" x="162.33333333333334" y="502.66666666666674" width="68.666666666666657" height="48"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="D" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oAv-it-J90">
                                         <rect key="frame" x="0.0" y="0.0" width="28" height="48"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="40"/>
                                         <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
+                                        <color key="highlightedColor" name="green.main"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="o" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PNz-kJ-pXZ">
                                         <rect key="frame" x="28" y="0.0" width="22.333333333333329" height="48"/>
@@ -43,8 +49,11 @@
                         <viewLayoutGuide key="safeArea" id="QIL-mh-abL"/>
                         <color key="backgroundColor" name="background"/>
                         <constraints>
-                            <constraint firstItem="1yi-Rs-uF6" firstAttribute="centerX" secondItem="o9S-mc-xsw" secondAttribute="centerX" id="PYs-ye-GQi"/>
-                            <constraint firstItem="1yi-Rs-uF6" firstAttribute="centerY" secondItem="o9S-mc-xsw" secondAttribute="centerY" id="TkB-Tv-mZK"/>
+                            <constraint firstItem="1yi-Rs-uF6" firstAttribute="centerX" secondItem="o9S-mc-xsw" secondAttribute="centerX" id="byd-xc-Fac"/>
+                            <constraint firstAttribute="trailing" secondItem="hMf-mS-Jf4" secondAttribute="trailing" constant="100" id="vYA-WG-XX2"/>
+                            <constraint firstItem="1yi-Rs-uF6" firstAttribute="top" secondItem="hMf-mS-Jf4" secondAttribute="bottom" id="x79-6v-43S"/>
+                            <constraint firstItem="hMf-mS-Jf4" firstAttribute="centerY" secondItem="o9S-mc-xsw" secondAttribute="centerY" constant="-20" id="y8V-Ga-UYl"/>
+                            <constraint firstItem="hMf-mS-Jf4" firstAttribute="leading" secondItem="o9S-mc-xsw" secondAttribute="leading" constant="100" id="zrp-xf-pZ8"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -54,6 +63,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Logo.splash" width="246" height="246"/>
         <namedColor name="background">
             <color red="0.97254901960784312" green="0.97254901960784312" blue="0.97254901960784312" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
