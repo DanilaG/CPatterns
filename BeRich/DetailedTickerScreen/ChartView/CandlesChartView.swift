@@ -30,9 +30,9 @@ struct CandlesChartView: View {
                     x: .value("Date", stock.date, unit: selectedTimePeriod.calendarComponent),
                     yStart: .value("Low", stock.lowPrice),
                     yEnd: .value("High", stock.highPrice),
-                    width: 1
+                    width: 1.5
                 )
-                .foregroundStyle(Color.black)
+                .foregroundStyle(patterns.isSelected(stock) ? Color.white : Color.black)
                 RectangleMark(
                     x: .value("Date", stock.date, unit: selectedTimePeriod.calendarComponent),
                     yStart: .value("Open", stock.openPrice),
@@ -40,7 +40,9 @@ struct CandlesChartView: View {
                     width: 16
                 )
                 .foregroundStyle(
-                    stock.openPrice <= stock.closePrice ? Color.greenMain : Color.redMain
+                    (stock.openPrice <= stock.closePrice) ?
+                        (patterns.isSelected(stock) ? Color.greenSelected : Color.greenMain) :
+                        (patterns.isSelected(stock) ? Color.redSelected : Color.redMain)
                 )
             }
         }
@@ -75,5 +77,13 @@ private extension ChartTimePeriod {
         case .month:
             return .dateTime.year()
         }
+    }
+}
+
+private extension [PatternViewData] {
+    func isSelected(_ stock: Stock) -> Bool {
+        contains(where: {
+            $0.isSelected && $0.startDate <= stock.date && stock.date <= $0.endDate
+        })
     }
 }
