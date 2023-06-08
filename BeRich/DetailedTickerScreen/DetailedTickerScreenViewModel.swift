@@ -125,7 +125,7 @@ extension DetailedTickerScreenViewModel {
                         parameters: chartParameters,
                         candles: candles,
                         detectedPatterns: detectedPatterns
-                            .map(PatternViewData.init)
+                            .map { PatternViewData($0, chartParameters.period) }
                             .sorted()
                     ))))
                 }

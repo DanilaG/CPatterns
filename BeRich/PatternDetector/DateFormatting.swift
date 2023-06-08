@@ -18,4 +18,10 @@ public enum DateFormatting {
         formatter.dateFormat = "dd.MM.yyyy"
         return formatter
     }()
+
+    public static let monthYear: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM.yyyy"
+        return formatter
+    }()
 }

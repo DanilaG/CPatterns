@@ -10,7 +10,7 @@ struct PatternCellView: View {
                     Text(patternViewData.title)
                         .font(.title2)
                         .foregroundColor(patternViewData.isSelected ? Color.blueMain : .black)
-                    Text(DateFormatting.patternCellDate.string(from: patternViewData.startDate))
+                    Text(patternViewData.dateInterval)
                         .font(Font.subheadline)
                         .foregroundColor(patternViewData.isSelected ? Color.blueMain : .gray500)
                 }
