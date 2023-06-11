@@ -3,16 +3,16 @@ import SwiftUI
 struct ListScreen: View {
     @StateObject private var viewModel: ListScreenViewModel
     @State private var searchText = ""
+    @State private var tickers: Tickers = Fakes.tickers
+    @StateObject private var tradingDataNetworkFetcher = TradingDataNetworkFetcher()
+    @State private var path = NavigationPath()
 
     init(viewModel: ListScreenViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    @State private var tickers: Tickers = Fakes.tickers
-    @StateObject private var tradingDataNetworkFetcher = TradingDataNetworkFetcher()
-
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
                 switch viewModel.state {
                 case .initial:
@@ -30,6 +30,9 @@ struct ListScreen: View {
             .background(Color.background)
             .foregroundColor(.white)
             .navigationTitle(screenTitle)
+            .navigationDestination(for: Ticker.self) { ticker in
+                DetailedTickerScreen.make(title: ticker.title)
+            }
         }
         .accentColor(.white)
         .onAppear { viewModel.send(event: .didAppear) }
@@ -47,10 +50,7 @@ struct ListScreen: View {
             if !tickers.isEmpty {
                 List(tickers, id: \.title) { ticker in
                     TickerCellView(ticker: ticker)
-                        .background(
-                            NavigationLink("", destination: DetailedTickerScreen.make(title: ticker.title))
-                                .opacity(0)
-                        )
+                        .contentShape(Rectangle())
                         .listRowSeparator(.hidden)
                         .listRowBackground(
                             Color.white
@@ -60,6 +60,10 @@ struct ListScreen: View {
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 16.0)
                         )
+                        .onTapGesture {
+                            path.append(ticker)
+                            viewModel.send(event: .didSelectTicker(ticker))
+                        }
                         .padding(.horizontal, 16.0)
                 }
             } else {
@@ -98,6 +102,16 @@ private let screenTitle = "Акции"
 private let defaultErrorMessage = "К сожалению, что-то пошло не так"
 private let tryAgain = "Попробовать ещё раз"
 private let notFound = "Ничего не найдено"
+
+extension Ticker: Hashable {
+    static func == (lhs: Ticker, rhs: Ticker) -> Bool {
+        lhs.title == rhs.title
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+    }
+}
 
 struct ListScreen_Previews: PreviewProvider {
     static var previews: some View {
