@@ -62,7 +62,7 @@ struct DetailedTickerScreen: View {
                         stocks: chart.candles,
                         timePeriod: chart.parameters.period,
                         scrollToPattern: scrollToPattern.eraseToAnyPublisher(),
-                        onPatternsSelect: { viewModel.send(event: .didSelectPatterns($0)) }
+                        onPatternsSelect: { viewModel.send(event: .didSelectPatterns($0, .chart)) }
                     )
                     changeTimePeriodButtons(chart.parameters)
                         .navigationBarTitle(chart.parameters.tickerTitle)
@@ -75,7 +75,7 @@ struct DetailedTickerScreen: View {
                             PatternCellView(patternViewData: pattern)
                                 .onTapGesture {
                                     scrollToPattern.send(pattern)
-                                    viewModel.send(event: .didSelectPatterns([pattern]))
+                                    viewModel.send(event: .didSelectPatterns([pattern], .list))
                                     withAnimation {
                                         scroll.scrollTo(chartId)
                                     }

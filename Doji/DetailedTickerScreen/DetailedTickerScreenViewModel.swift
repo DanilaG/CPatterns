@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import YandexMobileMetrica
 
 final class DetailedTickerScreenViewModel: ObservableObject {
     @Published private(set) var state: State
@@ -39,11 +40,16 @@ extension DetailedTickerScreenViewModel {
     }
 
     enum Event {
+        enum SelectPatternSource: String {
+            case chart
+            case list
+        }
+
         case didAppear
         case didLoad(Chart)
         case failedLoad
         case didChangeTimePeriod(ChartTimePeriod)
-        case didSelectPatterns([PatternViewData])
+        case didSelectPatterns([PatternViewData], SelectPatternSource)
     }
 
     struct ChartParameters {
@@ -73,8 +79,10 @@ extension DetailedTickerScreenViewModel {
         case let .loading(parameters):
             switch event {
             case .failedLoad:
+                YMMYandexMetrica.reportEvent("detailedTickerScreen_error")
                 return .error(parameters)
             case let .didLoad(chart):
+                YMMYandexMetrica.reportEvent("detailedTickerScreen_loaded")
                 return .loaded(chart)
             default:
                 return state
@@ -82,8 +90,16 @@ extension DetailedTickerScreenViewModel {
         case let .loaded(chart):
             switch event {
             case let .didChangeTimePeriod(period):
+                YMMYandexMetrica.reportEvent("detailedTickerScreen_changeTimePeriod", parameters: [
+                    "period": period.title,
+                ])
                 return .loading(ChartParameters(tickerTitle: chart.parameters.tickerTitle, period: period))
-            case let .didSelectPatterns(selectedPatterns):
+            case let .didSelectPatterns(selectedPatterns, source):
+                YMMYandexMetrica.reportEvent("detailedTickerScreen_selectedPatterns", parameters: [
+                    "patterns": selectedPatterns.map(\.title),
+                    "ticker": chart.parameters.tickerTitle,
+                    "source": source.rawValue,
+                ])
                 return .loaded(Chart(
                     parameters: chart.parameters,
                     candles: chart.candles,
