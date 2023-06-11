@@ -76,7 +76,9 @@ struct DetailedTickerScreen: View {
                                 .onTapGesture {
                                     scrollToPattern.send(pattern)
                                     viewModel.send(event: .didSelectPatterns([pattern]))
-                                    scroll.scrollTo(chartId)
+                                    withAnimation {
+                                        scroll.scrollTo(chartId)
+                                    }
                                 }
                         }
                         .animation(.easeInOut, value: chart.detectedPatterns)
