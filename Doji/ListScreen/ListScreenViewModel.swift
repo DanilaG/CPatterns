@@ -41,6 +41,7 @@ extension ListScreenViewModel {
         case failedLoadTickers
         case didSelectReload
         case searching(String)
+        case didSelectTicker(Ticker)
     }
 }
 
@@ -59,9 +60,10 @@ extension ListScreenViewModel {
         case .loading:
             switch event {
             case let .didLoadTickers(tickers):
-                YMMYandexMetrica.reportEvent("ListScreen_loaded")
+                YMMYandexMetrica.reportEvent("listScreen_loaded")
                 return .loaded((tickers: tickers, filter: ""))
             case .failedLoadTickers:
+                YMMYandexMetrica.reportEvent("listScreen_error")
                 return .error
             default:
                 return state
@@ -70,12 +72,19 @@ extension ListScreenViewModel {
             switch event {
             case let .searching(filter):
                 return .loaded((tickers: data.tickers, filter: filter))
+            case let .didSelectTicker(ticker):
+                YMMYandexMetrica.reportEvent("listScreen_selectTicker", parameters: [
+                    "ticker": ticker.title,
+                    "searchString": data.filter,
+                ])
+                return state
             default:
                 return state
             }
         case .error:
             switch event {
             case .didSelectReload:
+                YMMYandexMetrica.reportEvent("listScreen_reload")
                 return .loading
             default:
                 return state
