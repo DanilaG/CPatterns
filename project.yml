@@ -29,6 +29,7 @@ settings:
     INFOPLIST_KEY_UILaunchStoryboardName: SplashScreen.storyboard
     INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleLightContent
     INFOPLIST_KEY_UIViewControllerBasedStatusBarAppearance: NO
+    INFOPLIST_KEY_UIUserInterfaceStyle: Light
   configs:
     Debug:
       ENABLE_TESTABILITY: YES
