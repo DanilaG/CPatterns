@@ -12,6 +12,11 @@ options:
 fileGroups:
   - Doji
 
+packages:
+  YandexMobileMetrica:
+    url: https://github.com/yandexmobile/metrica-sdk-ios
+    from: 3.14.0
+
 configs:
   Debug: debug
   Release: release
@@ -82,6 +87,8 @@ targets:
         exit 0
       name: Lint
       basedOnDependencyAnalysis: NO
+    dependencies:
+      - package: YandexMobileMetrica
 
   DojiTests:
     type: bundle.unit-test

@@ -18,3 +18,5 @@ xcuserdata/**/*
 
 *.xcodeproj
 *.xcworkspace
+
+**/YMetricaInfo.plist

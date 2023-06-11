@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import YandexMobileMetrica
 
 final class ListScreenViewModel: ObservableObject {
     @Published private(set) var state: State = .initial
@@ -58,6 +59,7 @@ extension ListScreenViewModel {
         case .loading:
             switch event {
             case let .didLoadTickers(tickers):
+                YMMYandexMetrica.reportEvent("ListScreen_loaded")
                 return .loaded((tickers: tickers, filter: ""))
             case .failedLoadTickers:
                 return .error
