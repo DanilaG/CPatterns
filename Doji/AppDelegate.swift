@@ -55,7 +55,7 @@ private extension AppDelegate {
             return
         }
 
-        configuration.logs = true
+        configuration.logs = false
         configuration.crashReporting = true
         configuration.locationTracking = false
 

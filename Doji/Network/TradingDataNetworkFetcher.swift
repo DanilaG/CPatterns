@@ -13,13 +13,12 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
             assertionFailure()
             return nil
         }
-        print(url)
         do {
             let data = try await request(url)
             let binanceTickers = try decodeJSON(type: BinanceTiсkers.self, from: data)
             return binanceTickers
         } catch {
-            print(error)
+            print("❌ \(error)")
         }
         return nil
     }
@@ -29,13 +28,12 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
             assertionFailure()
             return nil
         }
-        print(url)
         do {
             let data = try await request(url)
             let binanceCandles = try decodeJSON(type: BinanceCandles.self, from: data)
             return binanceCandles
         } catch {
-            print(error)
+            print("❌ \(error)")
         }
         return nil
     }
@@ -75,14 +73,13 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
             assertionFailure()
             return nil
         }
-        print(url)
         do {
             let data = try await request(url)
             let moexCandles = try decodeJSON(type: MoexCandles.self, from: data)
             let stocks = parseMoexCandles(moexCandles: moexCandles)
             return stocks
         } catch {
-            print(error)
+            print("❌ \(error)")
         }
         return nil
     }
@@ -108,8 +105,6 @@ private func request(_ url: URL) async throws -> Data {
     guard let httpURLResponse = response.httpURLResponse, httpURLResponse.isSuccessful else {
         throw NetworkingError.requestFailed
     }
-    print(httpURLResponse.statusCode)
-    print(httpURLResponse.allHeaderFields)
     return data
 }
 
@@ -179,7 +174,6 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
         let rawDate = moexCandles.candles.data[i][6]
         switch rawDate {
         case let .string(string):
-            print(string)
             date = string
         default:
             break
@@ -188,7 +182,6 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
         let openValue = moexCandles.candles.data[i][0]
         switch openValue {
         case let .double(double):
-            print(double)
             openPrice = double
         default:
             break
@@ -197,7 +190,6 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
         let closeValue = moexCandles.candles.data[i][1]
         switch closeValue {
         case let .double(double):
-            print(double)
             closePrice = double
         default:
             break
@@ -206,7 +198,6 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
         let highValue = moexCandles.candles.data[i][2]
         switch highValue {
         case let .double(double):
-            print(double)
             highPrice = double
         default:
             break
@@ -215,7 +206,6 @@ private func parseMoexCandles(moexCandles: MoexCandles) -> [Stock] {
         let lowValue = moexCandles.candles.data[i][3]
         switch lowValue {
         case let .double(double):
-            print(double)
             lowPrice = double
         default:
             break

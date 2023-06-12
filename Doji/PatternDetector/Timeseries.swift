@@ -41,7 +41,7 @@ struct Timeseries {
         self.numberOfSignificantCandles = numberOfSignificantCandles
         guard candlesticks.count == len else {
             self.candlesticks = []
-            print("timeseries len is wrong")
+            print("❌ timeseries len is wrong")
             return
         }
         self.candlesticks = candlesticks
