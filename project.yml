@@ -35,6 +35,7 @@ settings:
     INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleLightContent
     INFOPLIST_KEY_UIViewControllerBasedStatusBarAppearance: NO
     INFOPLIST_KEY_UIUserInterfaceStyle: Light
+    INFOPLIST_KEY_UIStatusBarHidden: YES
   configs:
     Debug:
       ENABLE_TESTABILITY: YES

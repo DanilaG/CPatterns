@@ -3,12 +3,15 @@ import YandexMobileMetrica
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
-        _: UIApplication,
+        _ application: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         setUpCustomNavBarAppearance()
         setUpCustomSearchBarAppearance()
         setUpYandexMetrica()
+
+        application.setStatusBarHidden(false, with: .slide)
+
         return true
     }
 }
