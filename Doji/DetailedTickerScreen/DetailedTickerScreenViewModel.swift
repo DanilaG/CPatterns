@@ -50,6 +50,7 @@ extension DetailedTickerScreenViewModel {
         case failedLoad
         case didChangeTimePeriod(ChartTimePeriod)
         case didSelectPatterns([PatternViewData], SelectPatternSource)
+        case didClickMoreAboutPattern(PatternViewData)
     }
 
     struct ChartParameters {
@@ -107,6 +108,11 @@ extension DetailedTickerScreenViewModel {
                         PatternViewData(pattern, isSelected: selectedPatterns.contains(where: { $0.id == pattern.id }))
                     }.sorted()
                 ))
+            case let .didClickMoreAboutPattern(pattern):
+                YMMYandexMetrica.reportEvent("detailedTickerScreen_moreAboutPattern", parameters: [
+                    "pattern": pattern.title,
+                ])
+                return state
             default:
                 return state
             }

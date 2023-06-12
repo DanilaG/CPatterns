@@ -14,6 +14,8 @@
 - changeTimePeriod - изменён период свечи:
     - period - новое значение
 - selectedPatterns - выбор паттернов
-    - patterns - выбранные патерны
+    - patterns - выбранные паттерны
     - ticker - заголовок tiker-а
     - source - источник выбора паттернов (chart/list)
+- moreAboutPattern - клик по "?" на паттерне
+    - pattern - паттерн, на котором кликнут "?"

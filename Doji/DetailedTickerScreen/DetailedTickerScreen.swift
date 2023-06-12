@@ -1,9 +1,11 @@
 import Combine
+import SafariServices
 import SwiftUI
 
 struct DetailedTickerScreen: View {
     @StateObject var viewModel: DetailedTickerScreenViewModel
     @State var scrollToPattern = PassthroughSubject<PatternViewData, Never>()
+    @State var patternDescription: PatternViewData? = nil
 
     let chartId = "chart"
 
@@ -72,14 +74,20 @@ struct DetailedTickerScreen: View {
                             .font(chart.detectedPatterns.isEmpty ? nil : .title)
                             .padding(.horizontal)
                         ForEach(chart.detectedPatterns, id: \.id) { pattern in
-                            PatternCellView(patternViewData: pattern)
-                                .onTapGesture {
-                                    scrollToPattern.send(pattern)
-                                    viewModel.send(event: .didSelectPatterns([pattern], .list))
-                                    withAnimation {
-                                        scroll.scrollTo(chartId)
-                                    }
+                            PatternCellView(
+                                patternViewData: pattern,
+                                infoAction: {
+                                    patternDescription = pattern
+                                    viewModel.send(event: .didClickMoreAboutPattern(pattern))
                                 }
+                            )
+                            .onTapGesture {
+                                scrollToPattern.send(pattern)
+                                viewModel.send(event: .didSelectPatterns([pattern], .list))
+                                withAnimation {
+                                    scroll.scrollTo(chartId)
+                                }
+                            }
                         }
                         .animation(.easeInOut, value: chart.detectedPatterns)
                     }
@@ -90,6 +98,9 @@ struct DetailedTickerScreen: View {
             .padding(.top, -12)
             .padding(.horizontal, -20)
             .listStyle(.plain)
+            .sheet(item: $patternDescription) { pattern in
+                SafariView(url: pattern.urlWithDescription)
+            }
         }
     }
 
@@ -131,4 +142,14 @@ extension ChartTimePeriod {
             return "Месяц"
         }
     }
+}
+
+private struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context _: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
+        SFSafariViewController(url: url)
+    }
+
+    func updateUIViewController(_: SFSafariViewController, context _: UIViewControllerRepresentableContext<SafariView>) {}
 }

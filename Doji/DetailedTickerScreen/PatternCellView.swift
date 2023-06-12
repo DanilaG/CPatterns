@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PatternCellView: View {
     var patternViewData: PatternViewData
+    let infoAction: () -> Void
 
     var body: some View {
         Group {
@@ -15,6 +16,11 @@ struct PatternCellView: View {
                         .foregroundColor(patternViewData.isSelected ? Color.blueMain : .gray500)
                 }
                 Spacer()
+                Button(action: infoAction, label: {
+                    Image(systemName: "questionmark.circle")
+                        .imageScale(.large)
+                        .foregroundColor(patternViewData.isSelected ? Color.blueMain : .gray500)
+                }).buttonStyle(.plain)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
