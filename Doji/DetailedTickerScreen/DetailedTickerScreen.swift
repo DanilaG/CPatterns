@@ -94,6 +94,7 @@ struct DetailedTickerScreen: View {
                 }
                 .id(chartId)
                 .listRowSeparator(.hidden)
+                .listRowBackground(Color.background)
             }
             .padding(.top, -12)
             .padding(.horizontal, -20)
