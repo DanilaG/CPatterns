@@ -6,7 +6,7 @@ struct DojiApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SplashView()
+            ListScreen.make()
         }
     }
 }
