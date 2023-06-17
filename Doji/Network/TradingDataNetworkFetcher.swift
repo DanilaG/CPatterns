@@ -68,6 +68,9 @@ final class TradingDataNetworkFetcher: TradingDataNetworkFetching, ObservableObj
     func getMoexCandles(ticker: String, timePeriod: ChartTimePeriod) async -> [Stock]? {
         var queryItems = [URLQueryItem]()
         queryItems.append(URLQueryItem(name: "iss.reverse", value: "true"))
+        if let from = timePeriod.requestFromDate {
+            queryItems.append(URLQueryItem(name: "from", value: from))
+        }
         queryItems.append(timePeriod.queryItem)
         guard let url = MoexApi.Method.candles.url(tiсker: ticker, queryItems: queryItems) else {
             assertionFailure()
@@ -253,5 +256,23 @@ extension ChartTimePeriod {
             value = "31"
         }
         return URLQueryItem(name: "interval", value: value)
+    }
+}
+
+extension ChartTimePeriod {
+    var requestFromDate: String? {
+        let fromDAte: Date?
+        switch self {
+        case .day:
+            fromDAte = Calendar.current.date(byAdding: .month, value: -4, to: Date())
+        case .week:
+            fromDAte = Calendar.current.date(byAdding: .month, value: -20, to: Date())
+        case .month:
+            fromDAte = Calendar.current.date(byAdding: .year, value: -5, to: Date())
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return fromDAte.flatMap { formatter.string(from: $0) }
     }
 }
