@@ -20,6 +20,10 @@ struct PatternViewData: Identifiable, Equatable {
         pattern.endDate
     }
 
+    var prediction: (direction: CandlePattern.Performance, probability: Double) {
+        (pattern.pattern.performanceRule, pattern.pattern.testedPerformance)
+    }
+
     var dateInterval: String {
         let start: String
         let end: String

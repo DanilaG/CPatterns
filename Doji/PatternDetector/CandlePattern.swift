@@ -474,3 +474,124 @@ private func ext_near(_ x: Double, _ y: Double) -> Bool {
 private func down_shadow_gap(_ c1: PatternDetectorCandle, _ c2: PatternDetectorCandle) -> Bool {
     c1.lowPrice > c2.highPrice
 }
+
+extension CandlePattern {
+    enum Performance {
+        case growing
+        case falling
+    }
+
+    var performanceRule: Performance {
+        switch self {
+        case .marubozuBlack:
+            return .falling
+        case .marubozuWhite:
+            return .growing
+        case .hammer:
+            return .growing
+        case .piercingPattern:
+            return .growing
+        case .twoCrowns:
+            return .falling
+        case .concealingBabySwallow:
+            return .falling
+        case .ladderBottom:
+            return .growing
+        case .takuriLine:
+            return .growing
+        case .kickingBullish:
+            return .growing
+        case .belt_hold_bullish:
+            return .growing
+        case .marubozu_closing_black:
+            return .falling
+        case .marubozu_opening_white:
+            return .growing
+        case .shooting_star_one_candle:
+            return .falling
+        case .doji_gravestone:
+            return .falling
+        case .belt_hold_bearish:
+            return .falling
+        case .doji_dragonfly:
+            return .growing
+        case .hanging_man:
+            return .growing
+        case .doji_northern:
+            return .growing
+        case .doji_long_legged:
+            return .growing
+        case .matching_low:
+            return .falling
+        case .hammer_inverted:
+            return .falling
+        case .kicking_bearish:
+            return .falling
+        case .harami_cross_bullish:
+            return .falling
+        case .morning_doji_star:
+            return .growing
+        case .above_the_stomach:
+            return .growing
+        case .dark_cloud_cover:
+            return .falling
+        }
+    }
+
+    var testedPerformance: Double {
+        switch self {
+        case .marubozuBlack:
+            return 0.53
+        case .marubozuWhite:
+            return 0.56
+        case .hammer:
+            return 0.6
+        case .piercingPattern:
+            return 0.64
+        case .twoCrowns:
+            return 0.7
+        case .concealingBabySwallow:
+            return 0.75
+        case .ladderBottom:
+            return 0.57
+        case .takuriLine:
+            return 0.66
+        case .kickingBullish:
+            return 0.53
+        case .belt_hold_bullish:
+            return 0.71
+        case .marubozu_closing_black:
+            return 0.52
+        case .marubozu_opening_white:
+            return 0.54
+        case .shooting_star_one_candle:
+            return 0.59
+        case .doji_gravestone:
+            return 0.51
+        case .belt_hold_bearish:
+            return 0.68
+        case .doji_dragonfly:
+            return 0.5
+        case .hanging_man:
+            return 0.59
+        case .doji_northern:
+            return 0.51
+        case .doji_long_legged:
+            return 0.51
+        case .matching_low:
+            return 0.61
+        case .hammer_inverted:
+            return 0.65
+        case .kicking_bearish:
+            return 0.54
+        case .harami_cross_bullish:
+            return 0.55
+        case .morning_doji_star:
+            return 0.76
+        case .above_the_stomach:
+            return 0.66
+        case .dark_cloud_cover:
+            return 0.6
+        }
+    }
+}

@@ -23,7 +23,18 @@ struct CandlesChartView: View {
                     yStart: .value("Low", minPrice),
                     yEnd: .value("High", maxPrice)
                 )
-                .foregroundStyle(($0.isSelected ? Color.blueMain : Color.gray400).opacity($0.isSelected ? 1.0 : 0.4))
+                .foregroundStyle(
+                    $0.predictionColor.opacity($0.predictionColorOpacity)
+                )
+                RectangleMark(
+                    xStart: .value("Date", $0.startDate, unit: selectedTimePeriod.calendarComponent),
+                    xEnd: .value("Date", $0.endDate, unit: selectedTimePeriod.calendarComponent),
+                    yStart: .value("Low", minPrice),
+                    yEnd: .value("High", maxPrice)
+                )
+                .foregroundStyle(
+                    ($0.isSelected ? Color.blueMain : Color.gray400).opacity($0.isSelected ? 1.0 : 0.4)
+                )
             }
             ForEach(stocks) { stock in
                 RectangleMark(
@@ -85,5 +96,22 @@ private extension [PatternViewData] {
         contains(where: {
             $0.isSelected && $0.startDate <= stock.date && stock.date <= $0.endDate
         })
+    }
+}
+
+private extension PatternViewData {
+    var predictionColor: Color {
+        prediction.direction == .growing ? Color.greenMain : Color.redMain
+    }
+
+    var predictionColorOpacity: CGFloat {
+        switch prediction.probability {
+        case 0.6 ..< 0.7:
+            return 0.15
+        case 7.0...:
+            return 0.3
+        default:
+            return 0.0
+        }
     }
 }
